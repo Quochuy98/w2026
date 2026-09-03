@@ -1,5 +1,6 @@
 import { type GuestInfo, type EventType } from "@/content/wedding";
 import { getSupabaseServerClient, isSupabaseConfigured } from "./supabase";
+import { getRandomNatureCode } from "./nature-codes";
 
 /**
  * Fallback mock guests for offline testing or when Supabase is not configured yet.
@@ -249,8 +250,8 @@ export async function deleteGuest(code: string): Promise<boolean> {
 }
 
 /**
- * Tự động tạo mã mời 6 chữ số ngẫu nhiên.
+ * Tự động tạo mã mời ngẫu nhiên theo tên các loài hoa, cá, chim, cây.
  */
 export function generateGuestCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return getRandomNatureCode();
 }

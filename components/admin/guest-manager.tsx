@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { type EventType, type GuestInfo } from "@/content/wedding";
+import { getRandomNatureCode } from "@/lib/nature-codes";
 import {
   Users,
   UserPlus,
@@ -32,6 +33,10 @@ export function GuestManager() {
   const [side, setSide] = useState<"groom" | "bride">("groom");
   const [customCode, setCustomCode] = useState("");
   const [note, setNote] = useState("");
+
+  const handleRandomizeCode = () => {
+    setCustomCode(getRandomNatureCode());
+  };
 
 
   const refreshGuests = async () => {
@@ -181,6 +186,7 @@ export function GuestManager() {
                 <option value="Chú">Chú</option>
                 <option value="Bác">Bác</option>
                 <option value="Cô Chú">Cô Chú</option>
+                <option value="Vợ Chồng">Vợ Chồng</option>
                 <option value="Gia đình">Gia đình</option>
               </select>
             </div>
@@ -233,16 +239,40 @@ export function GuestManager() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-2">
-                Mã Mời Tùy Chọn (Để trống sẽ tự sinh 6 số)
-              </label>
-              <input
-                type="text"
-                placeholder="VD: 232388, bac-hai..."
-                value={customCode}
-                onChange={(e) => setCustomCode(e.target.value)}
-                className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--background)] px-3 text-sm text-[var(--foreground)]"
-              />
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)]">
+                  Mã Mời Tùy Chọn
+                </label>
+                <button
+                  type="button"
+                  onClick={handleRandomizeCode}
+                  className="text-xs text-[var(--accent)] hover:underline flex items-center gap-1 font-medium transition-colors cursor-pointer"
+                >
+                  <Sparkle size={13} className="text-[var(--accent)]" />
+                  <span>Random mã mới</span>
+                </button>
+              </div>
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  placeholder="VD: rose, swan, koi, bamboo..."
+                  value={customCode}
+                  onChange={(e) => setCustomCode(e.target.value)}
+                  className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--background)] pl-3 pr-24 text-sm text-[var(--foreground)]"
+                />
+                <button
+                  type="button"
+                  onClick={handleRandomizeCode}
+                  className="absolute right-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] text-xs font-medium text-[var(--foreground)] border border-[var(--line)] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  title="Tạo ngẫu nhiên tên loài hoa, chim, cá, cây bằng tiếng Anh"
+                >
+                  <span>🎲</span>
+                  <span>Random</span>
+                </button>
+              </div>
+              <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+                Để trống hệ thống sẽ tự động gán tên tiếng Anh của một loài hoa, chim, cá hoặc cây ngẫu nhiên (VD: rose, swan, koi, pine...).
+              </p>
             </div>
 
             <div>

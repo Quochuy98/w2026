@@ -28,9 +28,11 @@ describe("Guests Data & Invitation Logic", () => {
     expect(guest).toBeNull();
   });
 
-  it("hàm generateGuestCode tạo ra mã 6 chữ số hợp lệ", () => {
+  it("hàm generateGuestCode tạo ra mã tên thiên nhiên tiếng Anh hợp lệ", () => {
     const code = generateGuestCode();
-    expect(code).toMatch(/^\d{6}$/);
+    expect(typeof code).toBe("string");
+    expect(code.length).toBeGreaterThan(2);
+    expect(code).toMatch(/^[a-z]+(-[a-z0-9]+)*$/);
   });
 
   it("tạo mới và xóa khách mời thành công trong fallback mode", async () => {
