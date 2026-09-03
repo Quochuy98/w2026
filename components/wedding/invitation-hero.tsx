@@ -16,23 +16,23 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
 
   // Câu chào mời khách
   const invitationHeadline = guest ? (
-    <div className="mb-6 inline-flex flex-col items-start gap-1.5 rounded-2xl border border-[var(--accent)]/30 bg-[var(--surface-strong)]/85 px-5 py-3.5 shadow-sm backdrop-blur-md">
-      <div className="flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[var(--accent-strong)]">
+    <div className="mb-4 inline-flex max-w-full flex-col items-start gap-1 rounded-2xl border border-[var(--accent)]/30 bg-[var(--surface-strong)]/90 px-4 py-2.5 shadow-sm sm:mb-6 sm:px-5 sm:py-3.5">
+      <div className="flex items-center gap-1.5 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[var(--accent-strong)]">
         <EnvelopeSimpleOpen size={14} weight="fill" className="text-[var(--accent)]" />
         <span>Thiệp Mời Cá Nhân Hóa</span>
       </div>
-      <p className="font-display text-xl sm:text-2xl text-[var(--foreground)] tracking-[-0.02em]">
+      <p className="font-display text-lg sm:text-2xl text-[var(--foreground)] tracking-[-0.02em] break-words">
         Trân trọng kính mời:{" "}
         <span className="text-[var(--accent-strong)] font-semibold">
           {guest.salutation} {guest.name}
         </span>
       </p>
       {guest.note && (
-        <p className="text-xs italic text-[var(--muted)]">{guest.note}</p>
+        <p className="text-xs italic text-[var(--muted)] break-words">{guest.note}</p>
       )}
     </div>
   ) : (
-    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 px-4 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.25em] text-[var(--accent-strong)] backdrop-blur-sm">
+    <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 px-4 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.25em] text-[var(--accent-strong)] sm:mb-5">
       <Sparkle size={13} weight="fill" className="text-[var(--accent)]" />
       <span>Trân trọng kính mời Quý khách & Gia đình</span>
     </div>
@@ -51,12 +51,12 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           image={slots.hero}
           priority
           sizes="100vw"
-          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[60%_25%] sm:[&>img]:object-[50%_22%]"
+          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[62%_20%] sm:[&>img]:object-[50%_22%]"
         />
-        {/* Subtle Luxury Gradient Overlay */}
+        {/* Subtle Luxury Gradient Overlay - Giữ trọn độ nét ảnh gốc, không bị mờ đục */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.55)_0%,rgb(244_247_248_/_0.15)_35%,transparent_55%,rgb(244_247_248_/_0.65)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.75)_0%,rgb(244_247_248_/_0.2)_30%,transparent_50%,rgb(244_247_248_/_0.7)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
         />
       </motion.div>
 
@@ -77,8 +77,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
       </header>
 
       {/* Main Content Hero - Trình chiếu chạy từ 2 bên vào */}
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-4 pt-16 pb-12 sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
-        <div className="w-full max-w-[46rem] overflow-visible rounded-[2rem] p-5 sm:p-0 bg-white/50 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border border-white/50 sm:border-transparent shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:shadow-none">
+      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-5 pt-20 pb-16 sm:px-8 sm:pt-24 lg:px-12">
+        <div className="max-w-[46rem] overflow-visible">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
             initial={{ x: -90, opacity: 0 }}
