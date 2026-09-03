@@ -51,12 +51,12 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           image={slots.hero}
           priority
           sizes="100vw"
-          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[60%_35%] sm:[&>img]:object-[50%_22%]"
+          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[58%_25%] sm:[&>img]:object-[50%_22%]"
         />
-        {/* Subtle Luxury Gradient Overlay - Trong trẻo, không bị mờ đục hay trắng thừa */}
+        {/* Subtle Luxury Gradient Overlay - Giống hoàn toàn Desktop, êm dịu, không bị hộp che */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.35)_0%,transparent_25%,transparent_60%,rgb(244_247_248_/_0.45)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.85)_0%,rgb(244_247_248_/_0.55)_35%,rgb(244_247_248_/_0.15)_70%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
         />
       </motion.div>
 
@@ -76,9 +76,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
         </div>
       </header>
 
-      {/* Main Content Hero - Kéo thấp xuống để lộ rõ 2 đầu cô dâu chú rể, blur nhẹ sang trọng */}
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] flex-col justify-end px-4 pt-20 pb-8 sm:flex-row sm:items-center sm:justify-start sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
-        <div className="w-full max-w-[46rem] overflow-visible rounded-[1.75rem] p-5 sm:p-0 bg-white/70 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none border border-white/60 sm:border-transparent shadow-[0_8px_30px_rgba(0,0,0,0.06)] sm:shadow-none">
+      {/* Main Content Hero - Đồng nhất với Desktop: chữ nổi trực tiếp trên nền gradient, không có khung hộp che ảnh */}
+      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-5 pt-20 pb-16 sm:px-8 sm:pt-24 lg:px-12">
+        <div className="max-w-[46rem] overflow-visible">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
             initial={{ x: -90, opacity: 0 }}
