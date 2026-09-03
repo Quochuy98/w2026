@@ -13,9 +13,9 @@ export function GalleryExperience({ images }: { images: AlbumImage[] }) {
     <>
       <div className="mt-8 grid grid-cols-1 gap-5 sm:mt-12 sm:grid-cols-12 sm:gap-7">
         {images.map((image, index) => {
-          const isLandscape = image.width > image.height;
-          const span = isLandscape ? "sm:col-span-8" : "sm:col-span-4";
-          const ratio = isLandscape ? "aspect-[3/2]" : "aspect-[2/3]";
+          const layout = image.layout ?? (index % 5 === 0 ? "wide" : index % 3 === 0 ? "portrait" : "standard");
+          const span = layout === "wide" ? "sm:col-span-8" : layout === "portrait" ? "sm:col-span-4" : index % 2 === 0 ? "sm:col-span-5" : "sm:col-span-7";
+          const ratio = layout === "portrait" ? "aspect-[4/5]" : layout === "wide" ? "aspect-[16/10]" : index % 4 === 0 ? "aspect-[5/4]" : "aspect-[4/3]";
           return (
             <Reveal key={image.id} delay={Math.min(index * 0.025, 0.2)} className={span}>
               <AlbumImageView image={image} className={ratio} sizes="(max-width: 767px) 100vw, 66vw" onClick={() => setActiveIndex(index)} />

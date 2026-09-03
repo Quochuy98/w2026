@@ -59,28 +59,23 @@ export function AlbumGallery({ slots, remaining = [], images: propImages }: Albu
 
   return (
     <>
-      {/* 1. Ảnh Mở Đầu Toàn Cảnh (Panorama Feature - Giữ trọn vẹn tỷ lệ ảnh gốc, không crop) */}
+      {/* 1. Ảnh Mở Đầu Toàn Cảnh (Panorama Feature) */}
       {openingImage && (
         <Reveal className="mb-6 sm:mb-8">
           <AlbumImageView
             image={openingImage}
-            className={
-              openingImage.width > openingImage.height
-                ? "aspect-[3/2] w-full"
-                : "aspect-[2/3] max-w-xl mx-auto"
-            }
+            className="aspect-[16/9] sm:aspect-[2.1/1]"
             sizes="100vw"
             onClick={() => open(openingImage.id)}
           />
         </Reveal>
       )}
 
-      {/* 2. Lưới Ảnh Ngay Hàng Thẳng Lối (Giữ đúng tỷ lệ gốc 3:2 hoặc 2:3 của máy ảnh) */}
+      {/* 2. Lưới Ảnh Ngay Hàng Thẳng Lối (Uniform Elegant Grid - Không bao giờ bị thủng lỗ) */}
       {galleryItems.length > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-7 items-start">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
           {galleryItems.map((image, index) => {
             const isLastOddOnMobile = index === galleryItems.length - 1 && galleryItems.length % 2 !== 0;
-            const isLandscape = image.width > image.height;
             return (
               <div
                 key={image.id}
@@ -90,9 +85,9 @@ export function AlbumGallery({ slots, remaining = [], images: propImages }: Albu
                   <AlbumImageView
                     image={image}
                     className={
-                      isLandscape
-                        ? "aspect-[3/2]"
-                        : (isLastOddOnMobile ? "aspect-[3/2] lg:aspect-[2/3]" : "aspect-[2/3]")
+                      isLastOddOnMobile
+                        ? "aspect-[16/9] lg:aspect-[4/5]"
+                        : "aspect-[3/4] sm:aspect-[4/5]"
                     }
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     onClick={() => open(image.id)}
