@@ -27,6 +27,7 @@ export interface LocalAlbumState {
 
 export interface SavedSlotsConfig {
   bannerSrc?: string;
+  openingSrc?: string;
   groomAvatarSrc?: string;
   brideAvatarSrc?: string;
   groomCrop?: AvatarCropConfig;
@@ -50,6 +51,7 @@ export async function getSavedSlotsConfig(): Promise<SavedSlotsConfig> {
     const data = JSON.parse(raw);
     return {
       bannerSrc: data?.bannerSrc || weddingConfig.bannerImage || undefined,
+      openingSrc: data?.openingSrc || undefined,
       groomAvatarSrc: data?.groomAvatarSrc || weddingConfig.family.groom.avatarImage || undefined,
       brideAvatarSrc: data?.brideAvatarSrc || weddingConfig.family.bride.avatarImage || undefined,
       groomCrop: data?.groomCrop || weddingConfig.family.groom.avatarCrop || { x: 50, y: 25, zoom: 1 },
@@ -59,6 +61,7 @@ export async function getSavedSlotsConfig(): Promise<SavedSlotsConfig> {
   } catch {
     return {
       bannerSrc: weddingConfig.bannerImage || undefined,
+      openingSrc: undefined,
       groomAvatarSrc: weddingConfig.family.groom.avatarImage || undefined,
       brideAvatarSrc: weddingConfig.family.bride.avatarImage || undefined,
       groomCrop: weddingConfig.family.groom.avatarCrop || { x: 50, y: 25, zoom: 1 },
@@ -85,11 +88,15 @@ export async function setSavedBannerSrc(src: string): Promise<void> {
 }
 
 /**
- * Lưu vị trí ảnh (banner | groom | bride).
+ * Lưu vị trí ảnh (banner | opening | groom | bride).
  */
-export async function setSavedSlotConfig(type: "banner" | "groom" | "bride", src: string): Promise<SavedSlotsConfig> {
+export async function setSavedSlotConfig(
+  type: "banner" | "opening" | "groom" | "bride",
+  src: string
+): Promise<SavedSlotsConfig> {
   const current = await getSavedSlotsConfig();
   if (type === "banner") current.bannerSrc = src;
+  if (type === "opening") current.openingSrc = src;
   if (type === "groom") current.groomAvatarSrc = src;
   if (type === "bride") current.brideAvatarSrc = src;
 
@@ -294,6 +301,35 @@ export async function getLocalAlbumState(): Promise<LocalAlbumState | null> {
   }
 
   const unusedImages = () => localImages.filter((img) => !selectedForSlots.has(img.id));
+
+  // Gán ảnh Mở Đầu Album (opening) - Luôn ưu tiên ảnh ngang (Landscape)
+  if (savedConfig.openingSrc) {
+    const openingImg = localImages.find((img) => img.src === savedConfig.openingSrc);
+    if (openingImg) {
+      selectedForSlots.add(openingImg.id);
+      slots.opening = {
+        ...openingImg,
+        slot: "opening",
+        layout: "wide",
+      };
+    }
+  }
+
+  if (!slots.opening) {
+    const landscapeImg =
+      unusedImages().find((img) => img.width > img.height) ||
+      localImages.find((img) => img.width > img.height && img.id !== bannerImage?.id) ||
+      localImages.find((img) => img.width > img.height);
+
+    if (landscapeImg) {
+      selectedForSlots.add(landscapeImg.id);
+      slots.opening = {
+        ...landscapeImg,
+        slot: "opening",
+        layout: "wide",
+      };
+    }
+  }
 
   for (const slot of WEDDING_SLOTS) {
     if (slot === "hero") continue;

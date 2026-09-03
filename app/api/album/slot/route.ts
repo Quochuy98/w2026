@@ -20,7 +20,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     const { type, src } = await request.json();
-    if (!["banner", "groom", "bride"].includes(type) || !src || typeof src !== "string") {
+    if (!["banner", "opening", "groom", "bride"].includes(type) || !src || typeof src !== "string") {
       return json({ error: "Tham số không hợp lệ" }, { status: 400 });
     }
 
@@ -28,6 +28,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const labels = {
       banner: "Banner chính",
+      opening: "Ảnh mở đầu album",
       groom: "Avatar Nhà Trai",
       bride: "Avatar Nhà Gái",
     };
@@ -35,7 +36,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return json({
       success: true,
       config: updatedConfig,
-      message: `Đã đặt ảnh làm ${labels[type as "banner" | "groom" | "bride"]} thành công!`,
+      message: `Đã đặt ảnh làm ${labels[type as "banner" | "opening" | "groom" | "bride"]} thành công!`,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Internal Server Error";
