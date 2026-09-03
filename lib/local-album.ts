@@ -170,6 +170,8 @@ export async function scanLocalAlbumFiles(): Promise<AlbumImage[]> {
       .map((entry) => entry.name)
       .filter((name) => {
         const ext = path.extname(name).toLowerCase();
+        const base = path.parse(name).name.toLowerCase();
+        if (base.startsWith("og-") || base.startsWith("banner") || base.startsWith(".")) return false;
         return SUPPORTED_EXTENSIONS.has(ext);
       })
       .sort(naturalCompare);
