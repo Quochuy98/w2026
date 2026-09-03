@@ -45,8 +45,8 @@ jobs:
 
             # 2. Cấu hình Firewall Ubuntu (iptables) cho cổng 80 & 443
             echo ">>> [2/7] Cấu hình tường lửa iptables cho Port 80 & 443..."
-            sudo iptables -C INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
-            sudo iptables -C INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
+            sudo iptables -C INPUT -p tcp --dport 80 -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
+            sudo iptables -C INPUT -p tcp --dport 443 -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT
             if command -v netfilter-persistent >/dev/null 2>&1; then
               sudo netfilter-persistent save || true
             fi
