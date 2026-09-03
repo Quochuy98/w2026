@@ -44,7 +44,7 @@ if ! command -v pm2 >/dev/null 2>&1; then
   pm2 startup systemd -u ubuntu --hp /home/ubuntu || true
 fi
 
-# 4. Tự động cài đặt & cấu hình Caddy Reverse Proxy (Port 80 -> 3000)
+# 4. Tự động cài đặt & cấu hình Caddy Reverse Proxy (HTTPS cho domain & port 80)
 echo ">>> [4/6] Kiểm tra Caddy Reverse Proxy..."
 if ! command -v caddy >/dev/null 2>&1; then
   echo "Cài đặt Caddy Server..."
@@ -53,11 +53,19 @@ if ! command -v caddy >/dev/null 2>&1; then
   curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
   sudo apt-get update -y
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y caddy
-  
-  echo "Tạo cấu hình Caddy reverse proxy port 80 -> 3000..."
-  printf ":80 {\n    reverse_proxy 127.0.0.1:3000\n}\n" | sudo tee /etc/caddy/Caddyfile
-  sudo systemctl restart caddy
 fi
+
+# Cập nhật cấu hình Caddy cho cả domain và IP
+cat << 'EOF' | sudo tee /etc/caddy/Caddyfile
+wedding.quochuy.me {
+    reverse_proxy 127.0.0.1:3000
+}
+
+:80 {
+    reverse_proxy 127.0.0.1:3000
+}
+EOF
+sudo systemctl reload caddy || sudo systemctl restart caddy
 
 # 5. Cài đặt dependencies và build Next.js
 echo ">>> [5/6] Cài đặt dependencies & Build Next.js..."
