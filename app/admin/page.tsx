@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getAdminAlbum } from "@/lib/imagekit/admin";
 import { getSessionTokenFromCookieHeader, verifyAdminSession } from "@/lib/auth/session";
 import { scanLocalAlbumFiles, getSavedSlotsConfig } from "@/lib/local-album";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
@@ -18,15 +17,13 @@ export default async function AdminPage() {
   const cookieHeader = store.getAll().map(({ name, value }) => `${name}=${value}`).join("; ");
   if (!verifyAdminSession(getSessionTokenFromCookieHeader(cookieHeader))) redirect("/admin/login");
 
-  const [album, localImages, slotsConfig] = await Promise.all([
-    getAdminAlbum(),
+  const [localImages, slotsConfig] = await Promise.all([
     scanLocalAlbumFiles(),
     getSavedSlotsConfig(),
   ]);
 
   return (
     <AdminDashboard
-      initialAlbum={album}
       initialLocalImages={localImages}
       initialBannerSrc={slotsConfig.bannerSrc}
       initialGroomAvatarSrc={slotsConfig.groomAvatarSrc}
@@ -37,7 +34,3 @@ export default async function AdminPage() {
     />
   );
 }
-
-
-
-

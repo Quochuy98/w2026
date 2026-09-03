@@ -14,14 +14,8 @@ const nextConfig: NextConfig = {
   ],
 
   images: {
-    // The gallery requests quality 82 for local fallback images. Next 16
-    // validates this allow-list at the image optimizer boundary.
     qualities: [75, 82],
     deviceSizes: [360, 640, 960, 1440],
-    remotePatterns: [
-      { protocol: "https", hostname: "ik.imagekit.io" },
-      { protocol: "https", hostname: "*.imagekit.io" },
-    ],
   },
 };
 

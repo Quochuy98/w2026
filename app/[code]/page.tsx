@@ -1,6 +1,7 @@
 import { Metadata } from "next";
-import { getPublicAlbumState } from "@/lib/imagekit/gallery";
+import { getPublicAlbumState } from "@/lib/gallery";
 import { getGuestByCode, incrementGuestView } from "@/lib/guests";
+
 import { WeddingLanding } from "@/components/wedding/wedding-landing";
 import { weddingConfig } from "@/content/wedding";
 

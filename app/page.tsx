@@ -1,4 +1,5 @@
-import { getPublicAlbumState } from "@/lib/imagekit/gallery";
+import { getPublicAlbumState } from "@/lib/gallery";
+
 import { WeddingLanding } from "@/components/wedding/wedding-landing";
 
 export const revalidate = 60;

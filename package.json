@@ -11,13 +11,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "album:upload": "tsx scripts/upload-album.ts",
     "optimize-album": "tsx scripts/optimize-album.ts"
   },
 
+
   "dependencies": {
-    "@imagekit/next": "^2.1.5",
-    "@imagekit/nodejs": "^7.11.0",
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/supabase-js": "^2.112.4",
     "motion": "^13.1.1",
