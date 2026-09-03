@@ -73,6 +73,109 @@ select:focus-visible {
   box-shadow: var(--shadow);
 }
 
+/* Hiệu ứng rung rung lắc lắc cho Hộp Mừng Cưới */
+@keyframes gift-shake {
+  0%, 70%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  74% {
+    transform: rotate(-2.5deg) translateY(-2px);
+  }
+  78% {
+    transform: rotate(2.5deg) translateY(-3px);
+  }
+  82% {
+    transform: rotate(-2deg) translateY(-2px);
+  }
+  86% {
+    transform: rotate(2deg) translateY(-1px);
+  }
+  90% {
+    transform: rotate(-1deg) translateY(0);
+  }
+  94% {
+    transform: rotate(1deg) translateY(0);
+  }
+  97% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+@keyframes gift-icon-bounce {
+  0%, 70%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  74% {
+    transform: scale(1.12) rotate(-8deg);
+  }
+  78% {
+    transform: scale(1.15) rotate(8deg);
+  }
+  82% {
+    transform: scale(1.12) rotate(-6deg);
+  }
+  86% {
+    transform: scale(1.08) rotate(4deg);
+  }
+  90% {
+    transform: scale(1.04) rotate(-2deg);
+  }
+  94% {
+    transform: scale(1.02) rotate(1deg);
+  }
+  97% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes gift-shake-hover {
+  0%, 100% {
+    transform: rotate(0deg) scale(1.01);
+  }
+  20% {
+    transform: rotate(-2.5deg) scale(1.015);
+  }
+  40% {
+    transform: rotate(2.5deg) scale(1.015);
+  }
+  60% {
+    transform: rotate(-1.5deg) scale(1.01);
+  }
+  80% {
+    transform: rotate(1.5deg) scale(1.01);
+  }
+}
+
+@keyframes gift-icon-bounce-hover {
+  0%, 100% {
+    transform: scale(1.1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.18) rotate(-10deg);
+  }
+  75% {
+    transform: scale(1.18) rotate(10deg);
+  }
+}
+
+.animate-gift-shake {
+  animation: gift-shake 2.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.animate-gift-shake:hover {
+  animation: gift-shake-hover 0.5s ease-in-out infinite;
+}
+
+.animate-gift-icon {
+  animation: gift-icon-bounce 2.8s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.animate-gift-shake:hover .animate-gift-icon {
+  animation: gift-icon-bounce-hover 0.5s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

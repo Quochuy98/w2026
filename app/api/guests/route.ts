@@ -45,7 +45,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       code: body.code,
       name: body.name.trim(),
       salutation: body.salutation || "Bạn",
-      eventType: body.eventType === "reception" ? "reception" : "wedding",
+      eventType: body.eventType === "reception" ? "reception" : body.eventType === "both" ? "both" : "wedding",
       side: body.side || "groom",
       note: body.note || undefined,
     });

@@ -71,18 +71,24 @@ export function AlbumGallery({ slots, remaining = [], images: propImages }: Albu
         </Reveal>
       )}
 
-      {/* 2. Lưới Masonry Cân Đối Tuyệt Đối - Không bao giờ bị thủng hay trống lỗ */}
+      {/* 2. Lưới Ảnh Ngay Hàng Thẳng Lối (Uniform Elegant Grid - Không bao giờ bị thủng lỗ) */}
       {galleryItems.length > 0 && (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 sm:gap-7 space-y-5 sm:space-y-7">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
           {galleryItems.map((image, index) => {
-            const isLandscape = image.width > image.height;
-            const ratio = isLandscape ? "aspect-[3/2]" : "aspect-[2/3]";
+            const isLastOddOnMobile = index === galleryItems.length - 1 && galleryItems.length % 2 !== 0;
             return (
-              <div key={image.id} className="break-inside-avoid">
+              <div
+                key={image.id}
+                className={isLastOddOnMobile ? "col-span-2 lg:col-span-1" : ""}
+              >
                 <Reveal delay={Math.min(index * 0.04, 0.25)}>
                   <AlbumImageView
                     image={image}
-                    className={ratio}
+                    className={
+                      isLastOddOnMobile
+                        ? "aspect-[16/9] lg:aspect-[4/5]"
+                        : "aspect-[3/4] sm:aspect-[4/5]"
+                    }
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     onClick={() => open(image.id)}
                   />

@@ -7,7 +7,6 @@ import { SpeakerHigh, SpeakerSlash, MusicNotes } from "@phosphor-icons/react";
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
 
   const music = weddingConfig.music;
 
@@ -22,7 +21,6 @@ export function MusicPlayer() {
         .play()
         .then(() => {
           setIsPlaying(true);
-          setHasInteracted(true);
         })
         .catch(() => {
           setIsPlaying(false);
@@ -30,30 +28,54 @@ export function MusicPlayer() {
     }
   };
 
-  // Attempt auto-play on first user interaction anywhere on the window
+  // Tự động phát nhạc ngay khi vào trang web, kết hợp fallback ngay khi người dùng có bất kỳ tương tác nào
   useEffect(() => {
-    const handleFirstInteraction = () => {
-      if (!hasInteracted && audioRef.current && !isPlaying) {
-        audioRef.current
-          .play()
-          .then(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    let isSubscribed = true;
+
+    const startPlaying = () => {
+      if (!isSubscribed || !audio) return;
+      audio
+        .play()
+        .then(() => {
+          if (isSubscribed) {
             setIsPlaying(true);
-            setHasInteracted(true);
-          })
-          .catch(() => {
-            // Autoplay blocked, wait for explicit click on player button
-          });
-      }
+            cleanup();
+          }
+        })
+        .catch(() => {
+          // Trình duyệt chặn autoplay khi chưa có tương tác, đợi tương tác đầu tiên
+        });
     };
 
-    window.addEventListener("click", handleFirstInteraction, { once: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { once: true });
+    // 1. Thử phát ngay lập tức khi component mount
+    startPlaying();
+
+    // 2. Lắng nghe mọi tương tác đầu tiên: cuộn trang, chạm màn hình, click, bấm phím...
+    const handleInteraction = () => {
+      startPlaying();
+    };
+
+    const events = ["click", "touchstart", "touchend", "scroll", "wheel", "keydown", "pointerdown"];
+    const cleanup = () => {
+      events.forEach((ev) => {
+        window.removeEventListener(ev, handleInteraction);
+        document.removeEventListener(ev, handleInteraction);
+      });
+    };
+
+    events.forEach((ev) => {
+      window.addEventListener(ev, handleInteraction, { once: true, passive: true });
+      document.addEventListener(ev, handleInteraction, { once: true, passive: true });
+    });
 
     return () => {
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
+      isSubscribed = false;
+      cleanup();
     };
-  }, [hasInteracted, isPlaying]);
+  }, []);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
@@ -62,7 +84,9 @@ export function MusicPlayer() {
         ref={audioRef}
         src={music.src}
         preload="auto"
+        autoPlay
         loop
+        playsInline
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />

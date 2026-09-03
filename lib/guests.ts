@@ -32,6 +32,15 @@ export const FALLBACK_GUESTS: Record<string, GuestInfo> = {
     note: "Khách nhà gái - Tiệc mừng báo hỷ",
     viewCount: 1,
   },
+  "ca-hai": {
+    code: "ca-hai",
+    name: "Chú Năm & Thím Năm",
+    salutation: "Gia đình",
+    eventType: "both",
+    side: "groom",
+    note: "Khách VIP - Tham dự cả 2 sự kiện",
+    viewCount: 1,
+  },
 };
 
 

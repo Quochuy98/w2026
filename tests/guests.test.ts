@@ -56,4 +56,29 @@ describe("Guests Data & Invitation Logic", () => {
     const fetchedAfterDelete = await getGuestByCode(newGuestCode);
     expect(fetchedAfterDelete).toBeNull();
   });
+
+  it("tra cứu khách mời mời cả 2 sự kiện (both) thành công", async () => {
+    const guest = await getGuestByCode("ca-hai");
+    expect(guest).not.toBeNull();
+    expect(guest?.eventType).toBe("both");
+    expect(guest?.name).toBe("Chú Năm & Thím Năm");
+  });
+
+  it("tạo khách mời với eventType='both' thành công", async () => {
+    const code = "test-both-event";
+    const res = await createGuest({
+      code,
+      name: "Khách Mời Cả Hai Sự Kiện",
+      salutation: "Chị",
+      eventType: "both",
+      side: "bride",
+    });
+    expect(res.success).toBe(true);
+    expect(res.guest?.eventType).toBe("both");
+
+    const fetched = await getGuestByCode(code);
+    expect(fetched?.eventType).toBe("both");
+
+    await deleteGuest(code);
+  });
 });

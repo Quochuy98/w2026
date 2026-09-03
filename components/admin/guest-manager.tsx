@@ -201,7 +201,7 @@ export function GuestManager() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-2">
-                Sự Kiện Mời (Chọn 1 trong 2) *
+                Sự Kiện Mời *
               </label>
               <select
                 value={eventType}
@@ -210,6 +210,7 @@ export function GuestManager() {
               >
                 <option value="wedding">Lễ Cưới (Tư gia Vĩnh Long)</option>
                 <option value="reception">Tiệc Báo Hỷ (Unique Quận 7)</option>
+                <option value="both">Cả 2 Sự Kiện (Lễ Cưới &amp; Báo Hỷ)</option>
               </select>
 
             </div>
@@ -352,11 +353,14 @@ export function GuestManager() {
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-full">
                             <House size={12} weight="fill" /> Lễ cưới (Tư gia)
                           </span>
-                        ) : (
+                        ) : g.eventType === "reception" ? (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-sky-700 bg-sky-500/10 px-2.5 py-1 rounded-full">
                             <Buildings size={12} weight="fill" /> Báo hỷ (Unique Q7)
                           </span>
-
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-purple-700 bg-purple-500/10 px-2.5 py-1 rounded-full">
+                            <Sparkle size={12} weight="fill" /> Cả 2 sự kiện
+                          </span>
                         )}
                       </td>
 

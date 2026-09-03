@@ -62,6 +62,21 @@ test.describe("wedding landing", () => {
     await expect(page.getByRole("heading", { name: /Tiệc Mừng Báo Hỷ/i })).toHaveCount(0);
   });
 
+  test("renders both events for guest link /ca-hai", async ({ page }) => {
+    await openPublicPage(page, "/ca-hai");
+
+    const hero = page.locator("#top");
+    await expect(hero.getByText(/Thiệp Mời Cá Nhân Hóa/i)).toBeVisible();
+    await expect(hero.getByText(/Chú Năm & Thím Năm/i)).toBeVisible();
+    // Both locations should be visible in Hero
+    await expect(hero.getByText(/Tỉnh Vĩnh Long/i).first()).toBeVisible();
+    await expect(hero.getByText(/TP\. Hồ Chí Minh/i).first()).toBeVisible();
+
+    // Both event cards should be visible in EventDetails
+    await expect(page.getByRole("heading", { name: /Lễ Thành Hôn/i })).toBeVisible();
+    await expect(page.getByText(/Unique/i).first()).toBeVisible();
+  });
+
 
   test("interacts with red wedding gift box to reveal QR code and account number", async ({ page }) => {
     await openPublicPage(page, "/#gifts");

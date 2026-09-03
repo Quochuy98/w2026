@@ -46,14 +46,20 @@ export function WeddingGift() {
           {/* Hộp Mừng Cưới Màu Đỏ Sang Trọng */}
           <div
             onClick={() => setIsOpen(!isOpen)}
-            className="group relative cursor-pointer overflow-hidden rounded-[2rem] border-2 border-amber-400/40 bg-[linear-gradient(145deg,#8C152B_0%,#B81E38_45%,#700B1A_100%)] p-7 sm:p-10 text-center text-white shadow-[0_20px_50px_rgba(140,21,43,0.3)] transition-all duration-500 hover:scale-[1.01] hover:border-amber-300 hover:shadow-[0_25px_60px_rgba(140,21,43,0.4)]"
+            className={`group relative cursor-pointer overflow-hidden rounded-[2rem] border-2 border-amber-400/40 bg-[linear-gradient(145deg,#8C152B_0%,#B81E38_45%,#700B1A_100%)] p-7 sm:p-10 text-center text-white shadow-[0_20px_50px_rgba(140,21,43,0.3)] transition-all duration-500 hover:scale-[1.01] hover:border-amber-300 hover:shadow-[0_25px_60px_rgba(140,21,43,0.4)] ${
+              !isOpen ? "animate-gift-shake" : ""
+            }`}
           >
             {/* Background Decorative Gold Foil Corners */}
             <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-amber-400/15 blur-2xl" />
             <div className="pointer-events-none absolute -left-12 -bottom-12 h-36 w-36 rounded-full bg-amber-400/10 blur-2xl" />
 
             {/* Header / Gift Box Icon */}
-            <div className="relative z-10 mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full border-2 border-amber-300/50 bg-[linear-gradient(135deg,#D4AF37_0%,#AA771C_100%)] text-white shadow-lg transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
+            <div
+              className={`relative z-10 mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full border-2 border-amber-300/50 bg-[linear-gradient(135deg,#D4AF37_0%,#AA771C_100%)] text-white shadow-lg transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110 ${
+                !isOpen ? "animate-gift-icon" : ""
+              }`}
+            >
               <Gift size={38} weight="fill" className="text-amber-100" />
             </div>
 

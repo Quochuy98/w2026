@@ -30,6 +30,13 @@ const metadataBase = (() => {
 export const metadata: Metadata = {
   title: weddingConfig.seo.title,
   description: weddingConfig.seo.description,
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+  },
   ...(metadataBase ? { metadataBase } : {}),
   openGraph: {
     title: `${weddingConfig.groom} & ${weddingConfig.bride}`,

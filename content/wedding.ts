@@ -82,7 +82,7 @@ export interface FamilyConfig {
   bride: FamilySide;
 }
 
-export type EventType = "wedding" | "reception";
+export type EventType = "wedding" | "reception" | "both";
 
 export interface WeddingEvent {
   type: "wedding" | "reception";
@@ -262,9 +262,9 @@ export const weddingConfig: WeddingConfig = {
       "Cảm ơn bạn đã luôn là một phần thật đẹp trong hành trình trưởng thành và câu chuyện tình yêu của chúng mình. Sự hiện diện, lời chúc phúc và tình cảm yêu thương của bạn chính là món quà quý giá nhất trong ngày trọng đại này!",
   },
   music: {
-    title: "A Thousand Years (Piano Romance)",
-    artist: "Wedding Theme",
-    src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-wedding-piano-112191.mp3",
+    title: "You Are The Reason",
+    artist: "Calum Scott",
+    src: "/music/YouAreTheReason.mp3",
   },
 };
 

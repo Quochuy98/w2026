@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS public.guests (
   code TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   salutation TEXT NOT NULL DEFAULT 'Bạn',
-  event_type TEXT NOT NULL DEFAULT 'wedding' CHECK (event_type IN ('wedding', 'reception')),
+  event_type TEXT NOT NULL DEFAULT 'wedding' CHECK (event_type IN ('wedding', 'reception', 'both')),
   side TEXT NOT NULL DEFAULT 'groom' CHECK (side IN ('groom', 'bride')),
   note TEXT,
   view_count INTEGER NOT NULL DEFAULT 0,
@@ -52,6 +52,14 @@ INSERT INTO public.guests (code, name, salutation, event_type, side, note)
 VALUES
   ('232388', 'Nam & Bạn Gái', 'Anh', 'reception', 'groom', 'Bạn thân thời đại học - Tiệc báo hỷ'),
   ('tu-gia', 'Bác Hai & Gia Đình', 'Gia đình', 'wedding', 'groom', 'Khách nhà trai - Lễ cưới tư gia'),
-  ('bao-hy', 'Hoàng Yến & Đồng Nghiệp', 'Bạn', 'reception', 'bride', 'Khách nhà gái - Tiệc báo hỷ')
+  ('bao-hy', 'Hoàng Yến & Đồng Nghiệp', 'Bạn', 'reception', 'bride', 'Khách nhà gái - Tiệc báo hỷ'),
+  ('ca-hai', 'Chú Năm & Thím Năm', 'Gia đình', 'both', 'groom', 'Khách VIP - Tham dự cả 2 sự kiện')
 ON CONFLICT (code) DO NOTHING;
+
+-- ==============================================================================
+-- LƯU Ý MIGRATION (Nếu đã tạo bảng trước đó trên Supabase):
+-- Chạy lệnh sau trong Supabase SQL Editor để cho phép giá trị 'both':
+-- ALTER TABLE public.guests DROP CONSTRAINT IF EXISTS guests_event_type_check;
+-- ALTER TABLE public.guests ADD CONSTRAINT guests_event_type_check CHECK (event_type IN ('wedding', 'reception', 'both'));
+-- ==============================================================================
 

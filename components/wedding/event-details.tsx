@@ -190,9 +190,12 @@ export function EventDetails({ guest }: EventDetailsProps) {
   const { wedding, reception } = weddingConfig.events;
   const eventType = guest?.eventType;
 
-  // Khi có mã khách mời, chỉ hiển thị đúng 1 sự kiện mà khách được mời (wedding hoặc reception)
-  const showWedding = guest ? eventType === "wedding" : true;
-  const showReception = guest ? eventType === "reception" : true;
+  // Khi có mã khách mời:
+  // - "wedding": chỉ hiển thị Lễ Cưới tư gia
+  // - "reception": chỉ hiển thị Tiệc Báo Hỷ
+  // - "both" hoặc không có guest: hiển thị cả hai sự kiện
+  const showWedding = guest ? eventType === "wedding" || eventType === "both" : true;
+  const showReception = guest ? eventType === "reception" || eventType === "both" : true;
 
   const isSingle = (showWedding && !showReception) || (!showWedding && showReception);
   const gridCols = isSingle ? "grid-cols-1 max-w-2xl mx-auto" : "grid-cols-1 lg:grid-cols-2";
