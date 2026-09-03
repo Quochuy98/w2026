@@ -45,7 +45,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           image={slots.hero}
           priority
           sizes="100vw"
-          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[58%_38%] sm:[&>img]:object-[50%_22%]"
+          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[58%_20%] sm:[&>img]:object-[50%_22%]"
         />
         {/* Subtle Luxury Gradient Overlay - Desktop 100% tự nhiên không blur; Mobile dịu mát không trắng đục */}
         <div
@@ -70,8 +70,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
         </div>
       </header>
 
-      {/* Main Content Hero */}
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-4 pt-14 pb-12 sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
+      {/* Main Content Hero - Mobile đặt dưới chân ảnh (justify-end pb-8) để không che cô dâu chú rể; Desktop căn giữa */}
+      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] flex-col justify-end items-start px-4 pt-16 pb-8 sm:justify-center sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
         <div className="w-full max-w-[46rem] overflow-visible">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
@@ -83,7 +83,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           </motion.div>
 
           {/* Vùng chữ có blur nhẹ trên mobile để thấy rõ ràng không bị chìm vào ảnh, desktop giữ nguyên */}
-          <div className="rounded-2xl p-4 sm:p-0 bg-white/45 sm:bg-transparent backdrop-blur-[6px] sm:backdrop-blur-none border border-white/40 sm:border-transparent shadow-sm sm:shadow-none">
+          <div className="rounded-2xl p-4 sm:p-0 bg-white/55 sm:bg-transparent backdrop-blur-[8px] sm:backdrop-blur-none border border-white/50 sm:border-transparent shadow-sm sm:shadow-none">
             {/* Wedding Invitation - Chạy từ bên PHẢI vào */}
             <motion.p
               className="mb-2 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--muted)]"
@@ -130,8 +130,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                 >
                   {weddingConfig.events.wedding.shortDate}
                 </time>
-                <span aria-hidden className="h-px w-10 bg-[var(--accent)]/45" />
-                <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)] font-medium">
+                <span aria-hidden className="h-px w-10 bg-[var(--accent)]" />
+                <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
                   {weddingConfig.events.wedding.locationCity}
                 </span>
               </motion.div>
@@ -148,8 +148,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                 >
                   {weddingConfig.events.reception.shortDate}
                 </time>
-                <span aria-hidden className="h-px w-10 bg-[var(--accent)]/45" />
-                <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)] font-medium">
+                <span aria-hidden className="h-px w-10 bg-[var(--accent)]" />
+                <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
                   {weddingConfig.events.reception.locationCity}
                 </span>
               </motion.div>
@@ -168,8 +168,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                   >
                     {weddingConfig.events.wedding.shortDate}
                   </time>
-                  <span aria-hidden className="h-px w-8 bg-[var(--accent)]/45" />
-                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)] font-medium">
+                  <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
+                  <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
                     {weddingConfig.events.wedding.locationCity}
                   </span>
                 </motion.div>
@@ -187,8 +187,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                   >
                     {weddingConfig.events.reception.shortDate}
                   </time>
-                  <span aria-hidden className="h-px w-8 bg-[var(--accent)]/45" />
-                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--muted)] font-medium">
+                  <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
+                  <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
                     {weddingConfig.events.reception.locationCity}
                   </span>
                 </motion.div>
