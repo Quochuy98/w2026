@@ -237,6 +237,7 @@ export const weddingConfig: WeddingConfig = {
       dateLabel: "Thứ Bảy, ngày 26 tháng 09 năm 2026",
       dateIso: "2026-09-26T18:00:00+07:00",
       timeLabel: "18:00",
+      lunarDate: "Ngày 16 tháng 08 năm Bính Ngọ",
       welcomeTime: "17:00 (Đón khách)",
       ceremonyTime: "19:00 (Khai tiệc)",
       venue: "Trung Tâm Tiệc Cưới Unique (Quận 7)",
