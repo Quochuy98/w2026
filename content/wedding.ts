@@ -173,15 +173,16 @@ export const weddingConfig: WeddingConfig = {
   bride: "Hoài Thương",
   monogram: "H&T",
   dateLabel: "22.09.2026",
-  bannerImage: undefined,
+  bannerImage: "/images/album/TART1313.webp",
 
   dateIso: WEDDING_INSTANT,
 
   timeZone: WEDDING_TIME_ZONE,
   seo: {
-
     title: "Thiệp Cưới Online | Quốc Huy & Hoài Thương",
-    description: "Trân trọng kính mời Quý khách đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.",
+    description: "Trân trọng kính mời Quý khách & Gia đình đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.",
+    siteUrl: "https://wedding.quochuy.me",
+    ogImage: "/images/album/TART1313.webp",
   },
   slots: WEDDING_SLOTS,
   family: {

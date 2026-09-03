@@ -17,17 +17,12 @@ const displayFont = Playfair_Display({
   weight: ["400", "500", "600"],
 });
 
-const configuredSiteUrl = weddingConfig.seo.siteUrl?.trim();
-const metadataBase = (() => {
-  if (!configuredSiteUrl) return undefined;
-  try {
-    return new URL(configuredSiteUrl);
-  } catch {
-    return undefined;
-  }
-})();
+const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
+const metadataBase = new URL(siteUrl);
+const bannerImageUrl = `${siteUrl}/images/album/TART1313.webp`;
 
 export const metadata: Metadata = {
+  metadataBase,
   title: weddingConfig.seo.title,
   description: weddingConfig.seo.description,
   icons: {
@@ -37,11 +32,28 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
-  ...(metadataBase ? { metadataBase } : {}),
   openGraph: {
-    title: `${weddingConfig.groom} & ${weddingConfig.bride}`,
-    description: `Album cưới ngày ${weddingConfig.dateLabel}`,
+    title: weddingConfig.seo.title,
+    description: weddingConfig.seo.description,
+    url: siteUrl,
+    siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
+    locale: "vi_VN",
     type: "website",
+    images: [
+      {
+        url: bannerImageUrl,
+        width: 1200,
+        height: 800,
+        alt: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
+        type: "image/webp",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: weddingConfig.seo.title,
+    description: weddingConfig.seo.description,
+    images: [bannerImageUrl],
   },
   robots: { index: true, follow: true },
 };

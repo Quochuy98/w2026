@@ -14,15 +14,38 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params;
   const guest = await getGuestByCode(code);
+  const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
+  const bannerImageUrl = `${siteUrl}/images/album/TART1313.webp`;
 
   if (guest) {
+    const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
+    const description = `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`;
+
     return {
-      title: `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`,
-      description: `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`,
+      title,
+      description,
       openGraph: {
-        title: `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`,
-        description: `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`,
+        title,
+        description,
+        url: `${siteUrl}/${code}`,
+        siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
+        locale: "vi_VN",
         type: "website",
+        images: [
+          {
+            url: bannerImageUrl,
+            width: 1200,
+            height: 800,
+            alt: title,
+            type: "image/webp",
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [bannerImageUrl],
       },
     };
   }
@@ -30,6 +53,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: weddingConfig.seo.title,
     description: weddingConfig.seo.description,
+    openGraph: {
+      title: weddingConfig.seo.title,
+      description: weddingConfig.seo.description,
+      url: `${siteUrl}/${code}`,
+      siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
+      locale: "vi_VN",
+      type: "website",
+      images: [
+        {
+          url: bannerImageUrl,
+          width: 1200,
+          height: 800,
+          alt: weddingConfig.seo.title,
+          type: "image/webp",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: weddingConfig.seo.title,
+      description: weddingConfig.seo.description,
+      images: [bannerImageUrl],
+    },
   };
 }
 
