@@ -5,7 +5,7 @@ import { getGuestByCode, incrementGuestView } from "@/lib/guests";
 import { WeddingLanding } from "@/components/wedding/wedding-landing";
 import { weddingConfig } from "@/content/wedding";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{ code: string }>;
