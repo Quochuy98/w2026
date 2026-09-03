@@ -19,7 +19,7 @@ const displayFont = Playfair_Display({
 
 const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
 const metadataBase = new URL(siteUrl);
-const bannerImageUrl = `${siteUrl}/images/album/TART1313.webp`;
+const bannerImageUrl = `${siteUrl}/images/album/og-banner.jpg`;
 
 export const metadata: Metadata = {
   metadataBase,
@@ -42,10 +42,11 @@ export const metadata: Metadata = {
     images: [
       {
         url: bannerImageUrl,
+        secureUrl: bannerImageUrl,
         width: 1200,
-        height: 800,
+        height: 630,
         alt: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
-        type: "image/webp",
+        type: "image/jpeg",
       },
     ],
   },

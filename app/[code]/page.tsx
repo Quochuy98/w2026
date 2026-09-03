@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { code } = await params;
   const guest = await getGuestByCode(code);
   const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
-  const bannerImageUrl = `${siteUrl}/images/album/TART1313.webp`;
+  const bannerImageUrl = `${siteUrl}/images/album/og-banner.jpg`;
 
   if (guest) {
     const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
@@ -34,10 +34,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         images: [
           {
             url: bannerImageUrl,
+            secureUrl: bannerImageUrl,
             width: 1200,
-            height: 800,
+            height: 630,
             alt: title,
-            type: "image/webp",
+            type: "image/jpeg",
           },
         ],
       },
@@ -63,10 +64,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [
         {
           url: bannerImageUrl,
+          secureUrl: bannerImageUrl,
           width: 1200,
-          height: 800,
+          height: 630,
           alt: weddingConfig.seo.title,
-          type: "image/webp",
+          type: "image/jpeg",
         },
       ],
     },
