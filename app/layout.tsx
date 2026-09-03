@@ -19,7 +19,7 @@ const displayFont = Playfair_Display({
 
 const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
 const metadataBase = new URL(siteUrl);
-const bannerImageUrl = `${siteUrl}/images/album/og-banner.jpg`;
+const bannerImageUrl = `${siteUrl}/og/og-banner.jpg`;
 
 export const metadata: Metadata = {
   metadataBase,

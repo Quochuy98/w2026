@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { code } = await params;
   const guest = await getGuestByCode(code);
   const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
-  const bannerImageUrl = `${siteUrl}/images/album/og-banner.jpg`;
+  const bannerImageUrl = `${siteUrl}/og/og-banner.jpg`;
 
   if (guest) {
     const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
