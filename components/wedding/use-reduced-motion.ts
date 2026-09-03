@@ -30,7 +30,6 @@ function getServerSnapshot() {
   return false;
 }
 
-/** A standards-compliant reduced-motion preference hook for the wedding UI. */
 export function useWeddingReducedMotion() {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return false;
 }

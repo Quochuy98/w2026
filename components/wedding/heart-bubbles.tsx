@@ -1,84 +1,68 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { motion } from "motion/react";
-import { useWeddingReducedMotion } from "./use-reduced-motion";
 
-// Chỉ 3-4 trái tim tinh tế, bay so le từng trái tim một, không bị dồn cục
-const GENTLE_HEARTS = [
+// Chỉ 3-4 trái tim nhẹ nhàng bay so le nhau từ dưới lên trên
+const HEARTS = [
   {
     id: 1,
-    size: 14,
+    size: 16,
     color: "#e11d48",
-    left: "24%",
-    top: "70%",
-    swayX: [0, -12, 8, -6],
-    duration: 4.6,
+    left: "22%",
+    duration: 4.8,
     delay: 0,
+    swayX: [0, -12, 10, -6],
   },
   {
     id: 2,
-    size: 16,
+    size: 18,
     color: "#dc2626",
-    left: "70%",
-    top: "75%",
-    swayX: [0, 14, -8, 10],
-    duration: 5.2,
-    delay: 1.5,
+    left: "72%",
+    duration: 5.4,
+    delay: 1.6,
+    swayX: [0, 14, -10, 8],
   },
   {
     id: 3,
-    size: 12,
+    size: 13,
     color: "#f43f5e",
-    left: "48%",
-    top: "80%",
-    swayX: [0, -8, 10, -4],
-    duration: 4.8,
-    delay: 3.0,
+    left: "46%",
+    duration: 5.0,
+    delay: 3.2,
+    swayX: [0, -10, 12, -4],
   },
   {
     id: 4,
-    size: 13,
+    size: 15,
     color: "#e11d48",
-    left: "35%",
-    top: "65%",
-    swayX: [0, 10, -6, 8],
-    duration: 5.0,
-    delay: 4.2,
+    left: "82%",
+    duration: 5.2,
+    delay: 4.6,
+    swayX: [0, 8, -8, 6],
   },
 ];
 
 export function HeartBubbles() {
-  const ready = useSyncExternalStore(
-    () => () => undefined,
-    () => true,
-    () => false,
-  );
-  const reduce = useWeddingReducedMotion();
-  const animated = ready && !reduce;
-
-  if (!animated) return null;
-
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-20 overflow-visible"
+      className="pointer-events-none absolute inset-0 z-30 overflow-visible"
     >
-      {GENTLE_HEARTS.map((h) => (
+      {HEARTS.map((h) => (
         <motion.span
           key={h.id}
           className="absolute block"
           style={{
             left: h.left,
-            top: h.top,
-            filter: "drop-shadow(0 2px 4px rgba(225, 29, 72, 0.4))",
+            bottom: "8px",
+            filter: "drop-shadow(0 2px 6px rgba(225, 29, 72, 0.45))",
           }}
           initial={{ opacity: 0, y: 0, scale: 0.3 }}
           animate={{
-            y: [0, -45, -110, -180],
+            y: [0, -50, -120, -220],
             x: h.swayX,
-            opacity: [0, 0.9, 0.75, 0],
-            scale: [0.3, 0.95, 1.15, 0.9],
+            opacity: [0, 0.95, 0.8, 0],
+            scale: [0.3, 1, 1.15, 0.85],
           }}
           transition={{
             duration: h.duration,

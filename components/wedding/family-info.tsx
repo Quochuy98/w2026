@@ -71,9 +71,9 @@ export function FamilyInfo({ slots, groomCrop: propGroomCrop, brideCrop: propBri
             </span>
 
             {/* Avatar Chú rể có crop và zoom khuôn mặt + Hiệu ứng trái tim bay như bong bóng */}
-            <div className="relative mb-6">
+            <div className="relative mb-6 h-36 w-36 sm:h-44 sm:w-44">
               <HeartBubbles />
-              <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
+              <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md">
                 <div
                   className="relative h-full w-full overflow-hidden"
                   style={{
@@ -120,9 +120,9 @@ export function FamilyInfo({ slots, groomCrop: propGroomCrop, brideCrop: propBri
             </span>
 
             {/* Avatar Cô dâu có crop và zoom khuôn mặt + Hiệu ứng trái tim bay như bong bóng */}
-            <div className="relative mb-6">
+            <div className="relative mb-6 h-36 w-36 sm:h-44 sm:w-44">
               <HeartBubbles />
-              <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
+              <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md">
                 <div
                   className="relative h-full w-full overflow-hidden"
                   style={{

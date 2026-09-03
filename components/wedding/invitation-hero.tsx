@@ -1,10 +1,8 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { motion } from "motion/react";
 import { weddingConfig, type AlbumImage, type GuestInfo, type WeddingSlot } from "@/content/wedding";
 import { AlbumImageView } from "./album-image";
-import { useWeddingReducedMotion } from "./use-reduced-motion";
 import { EnvelopeSimpleOpen, Sparkle, Heart } from "@phosphor-icons/react";
 
 interface InvitationHeroProps {
@@ -13,15 +11,7 @@ interface InvitationHeroProps {
 }
 
 export function InvitationHero({ slots, guest }: InvitationHeroProps) {
-  const ready = useSyncExternalStore(
-    () => () => undefined,
-    () => true,
-    () => false,
-  );
-  const reduce = useWeddingReducedMotion();
-  const animated = ready && !reduce;
-
-  // Easing mượt mà như trình chiếu phim
+  // Easing mượt mà chuẩn điện ảnh cho hiệu ứng trình chiếu
   const slideEase = [0.16, 1, 0.3, 1] as const;
 
   // Câu chào mời khách
@@ -53,9 +43,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
       {/* Background Hero Image - Animation trượt từ dưới lên */}
       <motion.div
         className="absolute inset-0"
-        initial={animated ? { y: 90, opacity: 0 } : false}
+        initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={animated ? { duration: 1.2, ease: slideEase } : { duration: 0 }}
+        transition={{ duration: 1.2, ease: slideEase }}
       >
         <AlbumImageView
           image={slots.hero}
@@ -77,9 +67,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
             href="#top"
             className="font-display text-2xl tracking-[-0.04em] text-[var(--foreground)] transition-opacity hover:opacity-80 inline-block"
             aria-label="Về đầu trang"
-            initial={animated ? { x: -80, opacity: 0 } : false}
+            initial={{ x: -80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={animated ? { duration: 0.8, delay: 0.1, ease: slideEase } : { duration: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: slideEase }}
           >
             {weddingConfig.monogram}
           </motion.a>
@@ -91,9 +81,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
         <div className="max-w-[46rem] overflow-visible">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
-            initial={animated ? { x: -90, opacity: 0 } : false}
+            initial={{ x: -90, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={animated ? { duration: 0.85, delay: 0.25, ease: slideEase } : { duration: 0 }}
+            transition={{ duration: 0.85, delay: 0.25, ease: slideEase }}
           >
             {invitationHeadline}
           </motion.div>
@@ -101,9 +91,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           {/* Wedding Invitation - Chạy từ bên PHẢI vào */}
           <motion.p
             className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--muted)]"
-            initial={animated ? { x: 90, opacity: 0 } : false}
+            initial={{ x: 90, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={animated ? { duration: 0.85, delay: 0.4, ease: slideEase } : { duration: 0 }}
+            transition={{ duration: 0.85, delay: 0.4, ease: slideEase }}
           >
             Wedding Invitation
           </motion.p>
@@ -113,18 +103,18 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
             {/* Quốc Huy - Chạy từ bên TRÁI vào */}
             <motion.span
               className="block"
-              initial={animated ? { x: -110, opacity: 0 } : false}
+              initial={{ x: -110, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={animated ? { duration: 0.9, delay: 0.55, ease: slideEase } : { duration: 0 }}
+              transition={{ duration: 0.9, delay: 0.55, ease: slideEase }}
             >
               {weddingConfig.groom}
             </motion.span>
             {/* & Hoài Thương - Chạy từ bên PHẢI vào */}
             <motion.span
               className="block italic font-light"
-              initial={animated ? { x: 110, opacity: 0 } : false}
+              initial={{ x: 110, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={animated ? { duration: 0.9, delay: 0.7, ease: slideEase } : { duration: 0 }}
+              transition={{ duration: 0.9, delay: 0.7, ease: slideEase }}
             >
               &amp; {weddingConfig.bride}
             </motion.span>
@@ -134,9 +124,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           {guest?.eventType === "wedding" ? (
             <motion.div
               className="mt-6 flex items-center gap-3.5 sm:mt-7"
-              initial={animated ? { x: -80, opacity: 0 } : false}
+              initial={{ x: -80, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={animated ? { duration: 0.85, delay: 0.85, ease: slideEase } : { duration: 0 }}
+              transition={{ duration: 0.85, delay: 0.85, ease: slideEase }}
             >
               <time
                 dateTime={weddingConfig.events.wedding.dateIso.slice(0, 10)}
@@ -152,9 +142,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           ) : guest?.eventType === "reception" ? (
             <motion.div
               className="mt-6 flex items-center gap-3.5 sm:mt-7"
-              initial={animated ? { x: 80, opacity: 0 } : false}
+              initial={{ x: 80, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={animated ? { duration: 0.85, delay: 0.85, ease: slideEase } : { duration: 0 }}
+              transition={{ duration: 0.85, delay: 0.85, ease: slideEase }}
             >
               <time
                 dateTime={weddingConfig.events.reception.dateIso.slice(0, 10)}
@@ -172,9 +162,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
               {/* 22.09.2026 Tỉnh Vĩnh Long - Chạy từ bên TRÁI vào */}
               <motion.div
                 className="flex items-center gap-3"
-                initial={animated ? { x: -80, opacity: 0 } : false}
+                initial={{ x: -80, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={animated ? { duration: 0.85, delay: 0.85, ease: slideEase } : { duration: 0 }}
+                transition={{ duration: 0.85, delay: 0.85, ease: slideEase }}
               >
                 <time
                   dateTime={weddingConfig.events.wedding.dateIso.slice(0, 10)}
@@ -191,9 +181,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
               {/* 26.09.2026 TP. Hồ Chí Minh - Chạy từ bên PHẢI vào */}
               <motion.div
                 className="flex items-center gap-3"
-                initial={animated ? { x: 80, opacity: 0 } : false}
+                initial={{ x: 80, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={animated ? { duration: 0.85, delay: 1.0, ease: slideEase } : { duration: 0 }}
+                transition={{ duration: 0.85, delay: 1.0, ease: slideEase }}
               >
                 <time
                   dateTime={weddingConfig.events.reception.dateIso.slice(0, 10)}
@@ -212,9 +202,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           {/* Action CTAs */}
           <motion.div
             className="mt-8 flex flex-wrap items-center gap-3.5 sm:mt-9"
-            initial={animated ? { y: 30, opacity: 0 } : false}
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={animated ? { duration: 0.8, delay: 1.15, ease: slideEase } : { duration: 0 }}
+            transition={{ duration: 0.8, delay: 1.15, ease: slideEase }}
           >
             <a
               href="#events"
