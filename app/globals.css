@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  /* This wedding album deliberately stays bright, including on dark-system devices. */
+  --background: #f4f7f8;
+  --surface: #e5edf1;
+  --surface-strong: #d8e4e9;
+  --foreground: #24323b;
+  --muted: #60717b;
+  --line: rgb(78 107 124 / 0.18);
+  --accent: #4e6b7c;
+  --accent-strong: #385565;
+  --accent-contrast: #f4f7f8;
+  --shadow: 0 24px 80px rgb(53 79 93 / 0.14);
+  color-scheme: only light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background:
+    radial-gradient(circle at 8% 12%, rgb(216 228 233 / 0.4), transparent 26rem),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+a,
+button,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.soft-shadow {
+  box-shadow: var(--shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "bannerSrc": "/images/album/TART0952.webp",
+  "groomAvatarSrc": "/images/album/TART1348.webp",
+  "brideAvatarSrc": "/images/album/TART0693.webp",
+  "groomCrop": {
+    "x": 76,
+    "y": 44,
+    "zoom": 1.8
+  },
+  "brideCrop": {
+    "x": 52,
+    "y": 23,
+    "zoom": 1.3
+  },
+  "hiddenImages": [],
+  "updatedAt": "2026-09-03T10:02:06.483Z"
+}
