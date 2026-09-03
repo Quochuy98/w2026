@@ -28,7 +28,7 @@ export function AlbumImageView({ image, priority = false, sizes = "100vw", class
       height={image.height}
       sizes={sizes}
       priority={priority}
-      className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.025]"
+      className="h-full w-full object-cover object-[center_15%] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.025]"
       unoptimized={true}
       onError={() => setFailed(true)}
     />
