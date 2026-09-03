@@ -173,7 +173,7 @@ export const weddingConfig: WeddingConfig = {
   bride: "Hoài Thương",
   monogram: "H&T",
   dateLabel: "22.09.2026",
-  bannerImage: "/og/og-banner.jpg",
+  bannerImage: "/og/og-banner.webp",
 
   dateIso: WEDDING_INSTANT,
 
@@ -182,7 +182,7 @@ export const weddingConfig: WeddingConfig = {
     title: "Thiệp Cưới Online | Quốc Huy & Hoài Thương",
     description: "Trân trọng kính mời Quý khách & Gia đình đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.",
     siteUrl: "https://wedding.quochuy.me",
-    ogImage: "/og/og-banner.jpg",
+    ogImage: "/og/og-banner.webp",
   },
   slots: WEDDING_SLOTS,
   family: {
