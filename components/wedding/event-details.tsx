@@ -74,13 +74,10 @@ function EventCard({ event }: { event: WeddingEvent }) {
       <div>
         {/* Top Header Badge */}
         <div className="mb-6 flex items-center justify-between gap-3">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)]/15 px-3.5 py-1 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[var(--accent-strong)]">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)]/15 px-3.5 py-1 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-[var(--accent-strong)] whitespace-nowrap">
             {isWedding ? <House size={14} weight="fill" /> : <Buildings size={14} weight="fill" />}
             <span>{event.badge}</span>
           </span>
-          {event.lunarDate && (
-            <span className="text-xs text-[var(--muted)]">{event.lunarDate}</span>
-          )}
         </div>
 
         {/* Title */}
@@ -96,6 +93,11 @@ function EventCard({ event }: { event: WeddingEvent }) {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--accent-strong)]">Thời Gian</p>
               <p className="text-base font-semibold text-[var(--foreground)]">{event.dateLabel}</p>
+              {event.lunarDate && (
+                <p className="text-xs text-[var(--muted)] mt-0.5">
+                  ({event.lunarDate})
+                </p>
+              )}
               {event.welcomeTime && (
                 <p className="text-xs text-[var(--muted)] mt-0.5">
                   Đón khách: <span className="font-medium text-[var(--foreground)]">{event.welcomeTime}</span> &bull; Khai tiệc: <span className="font-medium text-[var(--foreground)]">{event.ceremonyTime}</span>
