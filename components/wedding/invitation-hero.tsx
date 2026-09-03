@@ -51,12 +51,12 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           image={slots.hero}
           priority
           sizes="100vw"
-          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[62%_20%] sm:[&>img]:object-[50%_22%]"
+          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[60%_35%] sm:[&>img]:object-[50%_22%]"
         />
-        {/* Subtle Luxury Gradient Overlay - Giữ trọn độ nét ảnh gốc, không bị mờ đục */}
+        {/* Subtle Luxury Gradient Overlay - Trong trẻo, không bị mờ đục hay trắng thừa */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.75)_0%,rgb(244_247_248_/_0.2)_30%,transparent_50%,rgb(244_247_248_/_0.7)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.35)_0%,transparent_25%,transparent_60%,rgb(244_247_248_/_0.45)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
         />
       </motion.div>
 
@@ -76,9 +76,9 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
         </div>
       </header>
 
-      {/* Main Content Hero - Trình chiếu chạy từ 2 bên vào */}
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-5 pt-20 pb-16 sm:px-8 sm:pt-24 lg:px-12">
-        <div className="max-w-[46rem] overflow-visible">
+      {/* Main Content Hero - Kéo thấp xuống để lộ rõ 2 đầu cô dâu chú rể, blur nhẹ sang trọng */}
+      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] flex-col justify-end px-4 pt-20 pb-8 sm:flex-row sm:items-center sm:justify-start sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
+        <div className="w-full max-w-[46rem] overflow-visible rounded-[1.75rem] p-5 sm:p-0 bg-white/70 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none border border-white/60 sm:border-transparent shadow-[0_8px_30px_rgba(0,0,0,0.06)] sm:shadow-none">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
             initial={{ x: -90, opacity: 0 }}
@@ -158,7 +158,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
               </span>
             </motion.div>
           ) : (
-            <div className="mt-6 space-y-2.5 sm:mt-7">
+            <div className="mt-4 space-y-2 sm:mt-7 sm:space-y-2.5">
               {/* 22.09.2026 Tỉnh Vĩnh Long - Chạy từ bên TRÁI vào */}
               <motion.div
                 className="flex items-center gap-3"
@@ -201,7 +201,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
 
           {/* Action CTAs */}
           <motion.div
-            className="mt-6 flex flex-wrap items-center gap-3 sm:mt-9 sm:gap-3.5"
+            className="mt-5 flex flex-wrap items-center gap-2.5 sm:mt-9 sm:gap-3.5"
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.15, ease: slideEase }}
