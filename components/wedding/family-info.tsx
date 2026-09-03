@@ -5,6 +5,7 @@ import { weddingConfig, type AlbumImage, type WeddingSlot, type AvatarCropConfig
 
 import { Reveal } from "./reveal";
 import { Heart } from "@phosphor-icons/react";
+import { HeartBubbles } from "./heart-bubbles";
 
 interface FamilyInfoProps {
   slots: Record<WeddingSlot, AlbumImage>;
@@ -69,27 +70,30 @@ export function FamilyInfo({ slots, groomCrop: propGroomCrop, brideCrop: propBri
               Nhà Trai
             </span>
 
-            {/* Avatar Chú rể có crop và zoom khuôn mặt */}
-            <div className="relative mb-6 h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
-              <div
-                className="relative h-full w-full overflow-hidden"
-                style={{
-                  transform: `scale(${groomCrop.zoom})`,
-                  transformOrigin: `${groomCrop.x}% ${groomCrop.y}%`,
-                }}
-              >
-                <NextImage
-                  src={groomAvatarImage.src}
-                  alt={groomAvatarImage.alt}
-                  fill
-                  sizes="(max-width: 640px) 150px, 180px"
+            {/* Avatar Chú rể có crop và zoom khuôn mặt + Hiệu ứng trái tim bay như bong bóng */}
+            <div className="relative mb-6">
+              <HeartBubbles />
+              <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
+                <div
+                  className="relative h-full w-full overflow-hidden"
                   style={{
-                    objectFit: "cover",
-                    objectPosition: `${groomCrop.x}% ${groomCrop.y}%`,
+                    transform: `scale(${groomCrop.zoom})`,
+                    transformOrigin: `${groomCrop.x}% ${groomCrop.y}%`,
                   }}
-                  className="transition-transform duration-500"
-                  unoptimized={groomAvatarImage.src.startsWith("/")}
-                />
+                >
+                  <NextImage
+                    src={groomAvatarImage.src}
+                    alt={groomAvatarImage.alt}
+                    fill
+                    sizes="(max-width: 640px) 150px, 180px"
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: `${groomCrop.x}% ${groomCrop.y}%`,
+                    }}
+                    className="transition-transform duration-500"
+                    unoptimized={groomAvatarImage.src.startsWith("/")}
+                  />
+                </div>
               </div>
             </div>
 
@@ -115,27 +119,30 @@ export function FamilyInfo({ slots, groomCrop: propGroomCrop, brideCrop: propBri
               Nhà Gái
             </span>
 
-            {/* Avatar Cô dâu có crop và zoom khuôn mặt */}
-            <div className="relative mb-6 h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
-              <div
-                className="relative h-full w-full overflow-hidden"
-                style={{
-                  transform: `scale(${brideCrop.zoom})`,
-                  transformOrigin: `${brideCrop.x}% ${brideCrop.y}%`,
-                }}
-              >
-                <NextImage
-                  src={brideAvatarImage.src}
-                  alt={brideAvatarImage.alt}
-                  fill
-                  sizes="(max-width: 640px) 150px, 180px"
+            {/* Avatar Cô dâu có crop và zoom khuôn mặt + Hiệu ứng trái tim bay như bong bóng */}
+            <div className="relative mb-6">
+              <HeartBubbles />
+              <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-[var(--surface)] bg-[var(--surface)] shadow-md sm:h-44 sm:w-44">
+                <div
+                  className="relative h-full w-full overflow-hidden"
                   style={{
-                    objectFit: "cover",
-                    objectPosition: `${brideCrop.x}% ${brideCrop.y}%`,
+                    transform: `scale(${brideCrop.zoom})`,
+                    transformOrigin: `${brideCrop.x}% ${brideCrop.y}%`,
                   }}
-                  className="transition-transform duration-500"
-                  unoptimized={brideAvatarImage.src.startsWith("/")}
-                />
+                >
+                  <NextImage
+                    src={brideAvatarImage.src}
+                    alt={brideAvatarImage.alt}
+                    fill
+                    sizes="(max-width: 640px) 150px, 180px"
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: `${brideCrop.x}% ${brideCrop.y}%`,
+                    }}
+                    className="transition-transform duration-500"
+                    unoptimized={brideAvatarImage.src.startsWith("/")}
+                  />
+                </div>
               </div>
             </div>
 
