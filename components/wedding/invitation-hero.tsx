@@ -51,12 +51,12 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           image={slots.hero}
           priority
           sizes="100vw"
-          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[54%_28%] sm:[&>img]:object-[50%_22%]"
+          className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[60%_25%] sm:[&>img]:object-[50%_22%]"
         />
         {/* Subtle Luxury Gradient Overlay */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.92)_0%,rgb(244_247_248_/_0.65)_40%,rgb(244_247_248_/_0.15)_75%),linear-gradient(0deg,rgb(36_50_59_/_0.2)_0%,transparent_50%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.55)_0%,rgb(244_247_248_/_0.15)_35%,transparent_55%,rgb(244_247_248_/_0.65)_100%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
         />
       </motion.div>
 
@@ -77,8 +77,8 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
       </header>
 
       {/* Main Content Hero - Trình chiếu chạy từ 2 bên vào */}
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-5 pt-20 pb-16 sm:px-8 sm:pt-24 lg:px-12">
-        <div className="max-w-[46rem] overflow-visible">
+      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-[1400px] items-center px-4 pt-16 pb-12 sm:px-8 sm:pt-24 sm:pb-16 lg:px-12">
+        <div className="w-full max-w-[46rem] overflow-visible rounded-[2rem] p-5 sm:p-0 bg-white/50 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border border-white/50 sm:border-transparent shadow-[0_8px_32px_rgba(0,0,0,0.06)] sm:shadow-none">
           {/* Trân trọng kính mời Quý khách & Gia đình - Chạy từ bên TRÁI vào */}
           <motion.div
             initial={{ x: -90, opacity: 0 }}
@@ -90,7 +90,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
 
           {/* Wedding Invitation - Chạy từ bên PHẢI vào */}
           <motion.p
-            className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--muted)]"
+            className="mb-2.5 text-[0.65rem] sm:text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[var(--muted)]"
             initial={{ x: 90, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.85, delay: 0.4, ease: slideEase }}
@@ -99,7 +99,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           </motion.p>
 
           {/* Tên Chú rể & Cô dâu - Chạy từ 2 bên vào gặp nhau */}
-          <h1 className="font-display max-w-none pb-2 text-[clamp(2.8rem,7.5vw,6.5rem)] leading-[1.04] tracking-[-0.055em] text-[var(--foreground)] sm:text-[clamp(3.75rem,7vw,6.5rem)] overflow-hidden">
+          <h1 className="font-display max-w-none pb-2 text-[clamp(2.3rem,6.8vw,6.5rem)] leading-[1.04] tracking-[-0.055em] text-[var(--foreground)] sm:text-[clamp(3.75rem,7vw,6.5rem)] overflow-hidden">
             {/* Quốc Huy - Chạy từ bên TRÁI vào */}
             <motion.span
               className="block"
@@ -201,7 +201,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
 
           {/* Action CTAs */}
           <motion.div
-            className="mt-8 flex flex-wrap items-center gap-3.5 sm:mt-9"
+            className="mt-6 flex flex-wrap items-center gap-3 sm:mt-9 sm:gap-3.5"
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.15, ease: slideEase }}
