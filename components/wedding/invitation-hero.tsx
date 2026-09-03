@@ -14,26 +14,20 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
   // Easing mượt mà chuẩn điện ảnh cho hiệu ứng trình chiếu
   const slideEase = [0.16, 1, 0.3, 1] as const;
 
-  // Câu chào mời khách
+  // Câu chào mời khách - Dùng chung 1 form capsule pill thanh lịch bo tròn cho tất cả
   const invitationHeadline = guest ? (
-    <div className="mb-4 inline-flex max-w-full flex-col items-start gap-1 rounded-2xl border border-[var(--accent)]/30 bg-[var(--surface-strong)]/90 px-4 py-2.5 shadow-sm sm:mb-6 sm:px-5 sm:py-3.5">
-      <div className="flex items-center gap-1.5 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-[var(--accent-strong)]">
-        <EnvelopeSimpleOpen size={14} weight="fill" className="text-[var(--accent)]" />
-        <span>Thiệp Mời Cá Nhân Hóa</span>
-      </div>
-      <p className="font-display text-lg sm:text-2xl text-[var(--foreground)] tracking-[-0.02em] break-words">
+    <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 px-4 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.15em] text-[var(--accent-strong)] backdrop-blur-sm sm:mb-5">
+      <Sparkle size={13} weight="fill" className="text-[var(--accent)] shrink-0" />
+      <span className="truncate">
         Trân trọng kính mời:{" "}
-        <span className="text-[var(--accent-strong)] font-semibold">
+        <span className="text-[var(--foreground)] font-bold">
           {guest.salutation} {guest.name}
         </span>
-      </p>
-      {guest.note && (
-        <p className="text-xs italic text-[var(--muted)] break-words">{guest.note}</p>
-      )}
+      </span>
     </div>
   ) : (
-    <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 px-4 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.25em] text-[var(--accent-strong)] sm:mb-5">
-      <Sparkle size={13} weight="fill" className="text-[var(--accent)]" />
+    <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 px-4 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.25em] text-[var(--accent-strong)] backdrop-blur-sm sm:mb-5">
+      <Sparkle size={13} weight="fill" className="text-[var(--accent)] shrink-0" />
       <span>Trân trọng kính mời Quý khách & Gia đình</span>
     </div>
   );
@@ -53,10 +47,10 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
           sizes="100vw"
           className="h-full min-h-[100dvh] !rounded-none [&>img]:object-[58%_25%] sm:[&>img]:object-[50%_22%]"
         />
-        {/* Subtle Luxury Gradient Overlay - Giống hoàn toàn Desktop, êm dịu, không bị hộp che */}
+        {/* Subtle Luxury Gradient Overlay - Giống hoàn toàn Desktop, êm dịu, blur nhẹ nền section */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(244_247_248_/_0.85)_0%,rgb(244_247_248_/_0.55)_35%,rgb(244_247_248_/_0.15)_70%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
+          className="absolute inset-0 backdrop-blur-[2px] bg-[linear-gradient(180deg,rgb(244_247_248_/_0.85)_0%,rgb(244_247_248_/_0.55)_35%,rgb(244_247_248_/_0.15)_70%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)] sm:bg-[linear-gradient(90deg,rgb(244_247_248_/_0.93)_0%,rgb(244_247_248_/_0.72)_38%,rgb(244_247_248_/_0.25)_65%,rgb(244_247_248_/_0.06)_100%),linear-gradient(0deg,rgb(36_50_59_/_0.15)_0%,transparent_50%)]"
         />
       </motion.div>
 
