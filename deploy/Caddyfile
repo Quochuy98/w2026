@@ -1,0 +1,38 @@
+wedding.quochuy.me {
+    # Tự động nén response (JS, CSS, HTML, JSON) bằng zstd và gzip
+    encode zstd gzip
+
+    # Header bảo mật
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # Phục vụ ảnh trực tiếp kèm Cache-Control tối ưu 1 ngày + stale-while-revalidate 7 ngày
+    handle /images/* {
+        root * /var/www/w2026/public
+        header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+        file_server
+    }
+
+    # Reverse proxy tới Next.js
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}
+
+:80 {
+    encode zstd gzip
+
+    handle /images/* {
+        root * /var/www/w2026/public
+        header Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+        file_server
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}
