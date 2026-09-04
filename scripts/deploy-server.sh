@@ -58,11 +58,23 @@ fi
 # Cập nhật cấu hình Caddy cho cả domain và IP
 cat << 'EOF' | sudo tee /etc/caddy/Caddyfile
 wedding.quochuy.me {
-    reverse_proxy 127.0.0.1:3000
+    handle /images/* {
+        root * /var/www/w2026/public
+        file_server
+    }
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
 }
 
 :80 {
-    reverse_proxy 127.0.0.1:3000
+    handle /images/* {
+        root * /var/www/w2026/public
+        file_server
+    }
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
 }
 EOF
 sudo systemctl reload caddy || sudo systemctl restart caddy
