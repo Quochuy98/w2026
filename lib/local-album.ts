@@ -10,11 +10,13 @@ import {
   WEDDING_SLOTS,
   weddingConfig,
 } from "@/content/wedding";
+import { getSupabaseServerClient, isSupabaseConfigured } from "./supabase";
 
 const SUPPORTED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".heic"]);
 
 const ALBUM_DIR = path.join(process.cwd(), "public/images/album");
 const BANNER_CONFIG_PATH = path.join(process.cwd(), "content/banner.json");
+const SETTINGS_ALBUM_KEY = "album_config";
 
 export interface LocalAlbumState {
   images: AlbumImage[];
@@ -43,9 +45,121 @@ export function naturalCompare(left: string, right: string): number {
 }
 
 /**
+ * Đọc cấu hình các vị trí ảnh từ Supabase (bảng settings).
+ */
+async function fetchSlotsConfigFromSupabase(): Promise<SavedSlotsConfig | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  try {
+    const supabase = getSupabaseServerClient();
+    if (!supabase) return null;
+
+    const { data, error } = await supabase
+      .from("settings")
+      .select("value")
+      .eq("key", SETTINGS_ALBUM_KEY)
+      .maybeSingle();
+
+    if (error || !data?.value) {
+      return null;
+    }
+
+    const val = data.value as Record<string, unknown>;
+    return {
+      bannerSrc: typeof val?.bannerSrc === "string" ? val.bannerSrc : undefined,
+      openingSrc: typeof val?.openingSrc === "string" ? val.openingSrc : undefined,
+      groomAvatarSrc: typeof val?.groomAvatarSrc === "string" ? val.groomAvatarSrc : undefined,
+      brideAvatarSrc: typeof val?.brideAvatarSrc === "string" ? val.brideAvatarSrc : undefined,
+      groomCrop: (val?.groomCrop as AvatarCropConfig) || undefined,
+      brideCrop: (val?.brideCrop as AvatarCropConfig) || undefined,
+      hiddenImages: Array.isArray(val?.hiddenImages) ? (val.hiddenImages as string[]) : [],
+    };
+  } catch (err) {
+    console.error("Lỗi khi đọc cấu hình album từ Supabase:", err);
+    return null;
+  }
+}
+
+/**
+ * Lưu cấu hình các vị trí ảnh vào Supabase (bảng settings).
+ */
+async function saveSlotsConfigToSupabase(config: SavedSlotsConfig): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+
+  try {
+    const supabase = getSupabaseServerClient();
+    if (!supabase) return false;
+
+    const { error } = await supabase
+      .from("settings")
+      .upsert(
+        {
+          key: SETTINGS_ALBUM_KEY,
+          value: {
+            ...config,
+            updatedAt: new Date().toISOString(),
+          },
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "key" }
+      );
+
+    if (error) {
+      console.error("Lỗi khi lưu cấu hình album lên Supabase:", error);
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Lỗi khi kết nối Supabase để lưu cấu hình:", err);
+    return false;
+  }
+}
+
+/**
+ * Lưu cấu hình đồng thời lên Supabase và cập nhật file banner.json (nếu có thể).
+ */
+async function persistSlotsConfig(config: SavedSlotsConfig): Promise<void> {
+  // 1. Lưu vào Supabase (nếu đã cấu hình)
+  await saveSlotsConfigToSupabase(config);
+
+  // 2. Cập nhật local file banner.json làm cache / offline fallback
+  try {
+    const dir = path.dirname(BANNER_CONFIG_PATH);
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(
+      BANNER_CONFIG_PATH,
+      JSON.stringify({ ...config, updatedAt: new Date().toISOString() }, null, 2),
+      "utf-8"
+    );
+  } catch {
+    // Bỏ qua lỗi ghi file local nếu môi trường chỉ đọc
+  }
+}
+
+/**
  * Lấy cấu hình các vị trí ảnh đã chọn (Banner, Avatar Nhà Trai, Avatar Nhà Gái, Crop, Danh sách ảnh ẩn).
+ * Ưu tiên:
+ * 1. Supabase (Bảng settings, key = 'album_config')
+ * 2. File local (content/banner.json) cho môi trường offline / dev
+ * 3. Fallback mặc định từ weddingConfig
  */
 export async function getSavedSlotsConfig(): Promise<SavedSlotsConfig> {
+  // 1. Thử lấy từ Supabase
+  const remote = await fetchSlotsConfigFromSupabase();
+  if (remote) {
+    return {
+      bannerSrc: remote.bannerSrc || weddingConfig.bannerImage || undefined,
+      openingSrc: remote.openingSrc || undefined,
+      groomAvatarSrc: remote.groomAvatarSrc || weddingConfig.family.groom.avatarImage || undefined,
+      brideAvatarSrc: remote.brideAvatarSrc || weddingConfig.family.bride.avatarImage || undefined,
+      groomCrop: remote.groomCrop || weddingConfig.family.groom.avatarCrop || { x: 50, y: 25, zoom: 1 },
+      brideCrop: remote.brideCrop || weddingConfig.family.bride.avatarCrop || { x: 50, y: 25, zoom: 1 },
+      hiddenImages: Array.isArray(remote.hiddenImages) ? remote.hiddenImages : [],
+    };
+  }
+
+  // 2. Fallback sang file content/banner.json
   try {
     const raw = await fs.readFile(BANNER_CONFIG_PATH, "utf-8");
     const data = JSON.parse(raw);
@@ -59,6 +173,7 @@ export async function getSavedSlotsConfig(): Promise<SavedSlotsConfig> {
       hiddenImages: Array.isArray(data?.hiddenImages) ? data.hiddenImages : [],
     };
   } catch {
+    // 3. Fallback mặc định
     return {
       bannerSrc: weddingConfig.bannerImage || undefined,
       openingSrc: undefined,
@@ -81,7 +196,7 @@ export async function getSavedBannerSrc(): Promise<string | null> {
 }
 
 /**
- * Lưu lựa chọn ảnh Banner vào content/banner.json.
+ * Lưu lựa chọn ảnh Banner vào Supabase & content/banner.json.
  */
 export async function setSavedBannerSrc(src: string): Promise<void> {
   await setSavedSlotConfig("banner", src);
@@ -100,13 +215,7 @@ export async function setSavedSlotConfig(
   if (type === "groom") current.groomAvatarSrc = src;
   if (type === "bride") current.brideAvatarSrc = src;
 
-  const dir = path.dirname(BANNER_CONFIG_PATH);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(
-    BANNER_CONFIG_PATH,
-    JSON.stringify({ ...current, updatedAt: new Date().toISOString() }, null, 2),
-    "utf-8"
-  );
+  await persistSlotsConfig(current);
   return current;
 }
 
@@ -127,20 +236,12 @@ export async function toggleImageVisibility(src: string): Promise<{ hiddenImages
   }
 
   current.hiddenImages = Array.from(hidden);
-
-  const dir = path.dirname(BANNER_CONFIG_PATH);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(
-    BANNER_CONFIG_PATH,
-    JSON.stringify({ ...current, updatedAt: new Date().toISOString() }, null, 2),
-    "utf-8"
-  );
+  await persistSlotsConfig(current);
 
   return { hiddenImages: current.hiddenImages, isHidden };
 }
 
 /**
-
  * Lưu vị trí căn chỉnh khuôn mặt (crop/position/zoom) cho Nhà Trai hoặc Nhà Gái.
  */
 export async function setSavedCropConfig(
@@ -151,13 +252,7 @@ export async function setSavedCropConfig(
   if (side === "groom") current.groomCrop = crop;
   if (side === "bride") current.brideCrop = crop;
 
-  const dir = path.dirname(BANNER_CONFIG_PATH);
-  await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(
-    BANNER_CONFIG_PATH,
-    JSON.stringify({ ...current, updatedAt: new Date().toISOString() }, null, 2),
-    "utf-8"
-  );
+  await persistSlotsConfig(current);
   return current;
 }
 

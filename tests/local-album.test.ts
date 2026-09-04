@@ -70,6 +70,22 @@ describe("local album functionality", () => {
     expect(albumState!.slots["portrait-two"].src).toBe(testAvatar);
   });
 
+  it("loads default fallback config when neither Supabase nor banner.json is available", async () => {
+    const { getSavedSlotsConfig } = await import("@/lib/local-album");
+    const config = await getSavedSlotsConfig();
+    expect(config).toBeDefined();
+    expect(config.groomCrop).toBeDefined();
+    expect(config.brideCrop).toBeDefined();
+    expect(Array.isArray(config.hiddenImages)).toBe(true);
+  });
+
+  it("updates and retrieves banner source correctly", async () => {
+    const { setSavedBannerSrc, getSavedBannerSrc } = await import("@/lib/local-album");
+    const testBanner = "/images/album/test-banner.webp";
+    await setSavedBannerSrc(testBanner);
+    const result = await getSavedBannerSrc();
+    expect(result).toBe(testBanner);
+  });
 });
 
 

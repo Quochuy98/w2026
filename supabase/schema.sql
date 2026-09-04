@@ -56,10 +56,45 @@ VALUES
   ('ca-hai', 'Chú Năm & Thím Năm', 'Gia đình', 'both', 'groom', 'Khách VIP - Tham dự cả 2 sự kiện')
 ON CONFLICT (code) DO NOTHING;
 
+-- 8. Tạo bảng settings (Cấu hình hệ thống: Banner, Avatar, Crop, Hidden images,...)
+CREATE TABLE IF NOT EXISTS public.settings (
+  key TEXT PRIMARY KEY,
+  value JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+-- 9. Kích hoạt RLS cho bảng settings
+ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
+
+-- 10. Policy cho phép đọc công khai (để khách vào trang web tải được banner/avatar)
+CREATE POLICY "Cho phép đọc cấu hình công khai"
+  ON public.settings
+  FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+-- 11. Policy cho phép toàn quyền quản trị cho service_role
+CREATE POLICY "Toàn quyền quản trị cấu hình cho service role"
+  ON public.settings
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+-- 12. Policy cho phép cập nhật cấu hình hệ thống qua API
+CREATE POLICY "Cho phép cập nhật cấu hình hệ thống"
+  ON public.settings
+  FOR ALL
+  TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
+
+
 -- ==============================================================================
 -- LƯU Ý MIGRATION (Nếu đã tạo bảng trước đó trên Supabase):
 -- Chạy lệnh sau trong Supabase SQL Editor để cho phép giá trị 'both':
 -- ALTER TABLE public.guests DROP CONSTRAINT IF EXISTS guests_event_type_check;
 -- ALTER TABLE public.guests ADD CONSTRAINT guests_event_type_check CHECK (event_type IN ('wedding', 'reception', 'both'));
 -- ==============================================================================
+
 

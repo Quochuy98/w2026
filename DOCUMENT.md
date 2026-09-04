@@ -26,4 +26,7 @@
   - Chọn 1-click ảnh làm **Banner**, **Avatar Nhà Trai** và **Avatar Nhà Gái**.
   - **Căn chỉnh khuôn mặt (Crop / Zoom / Tọa độ X-Y)** cho ảnh đại diện Nhà Trai và Nhà Gái.
   - **Bật / Tắt hiển thị ảnh (Show / Hide)** trong danh sách album mà không làm mất ảnh avatar nếu đã chọn.
-  - Cấu hình lưu trữ tập trung tại `content/banner.json`.
+  - Cấu hình lưu trữ tập trung tại bảng `settings` trên **Supabase** (key `album_config`) với cơ chế dự phòng 3 lớp (Supabase -> `banner.json` local cache -> `weddingConfig` mặc định).
+  - Tách biệt dữ liệu ảnh trên máy chủ: Thư mục độc lập `/var/www/w2026-data/album` liên kết mềm (symlink) với `/var/www/w2026/public/images/album`, miễn nhiễm hoàn toàn với các lần deploy và `git reset --hard`.
+  - Hệ thống tự động sao lưu hàng ngày (`scripts/backup-album.sh` chạy lúc 02:00 AM qua Cronjob) nén ảnh định kỳ, tự động dọn dẹp và hỗ trợ gửi trực tiếp về Telegram Bot.
+

@@ -22,10 +22,18 @@ jobs:
           script_stop: true
           script: |
             cd /var/www/w2026
+            sudo mkdir -p /var/www/w2026-data/album
+            sudo chown -R ubuntu:ubuntu /var/www/w2026-data 2>/dev/null || true
+            if [ -d public/images/album ] && [ ! -L public/images/album ]; then
+              cp -r -n public/images/album/* /var/www/w2026-data/album/ 2>/dev/null || true
+            fi
             git fetch --all
             git checkout master
             git reset --hard origin/master
+            mkdir -p public/images
+            ln -sfn /var/www/w2026-data/album public/images/album
             if [ -n "${{ secrets.ENV_LOCAL }}" ]; then
               printf "%s\n" "${{ secrets.ENV_LOCAL }}" > .env.local
             fi
             bash scripts/deploy-server.sh
+

@@ -79,6 +79,19 @@ wedding.quochuy.me {
 EOF
 sudo systemctl reload caddy || sudo systemctl restart caddy
 
+# 4.5. Đảm bảo thư mục lưu trữ ảnh độc lập (/var/www/w2026-data) và Symlink an toàn
+echo ">>> [4.5/6] Kiểm tra cấu trúc lưu trữ ảnh độc lập (/var/www/w2026-data)..."
+sudo mkdir -p /var/www/w2026-data/album
+sudo chown -R ubuntu:ubuntu /var/www/w2026-data
+mkdir -p /var/www/w2026/public/images
+if [ ! -L /var/www/w2026/public/images/album ]; then
+  if [ -d /var/www/w2026/public/images/album ]; then
+    cp -r -n /var/www/w2026/public/images/album/* /var/www/w2026-data/album/ 2>/dev/null || true
+    rm -rf /var/www/w2026/public/images/album
+  fi
+  ln -sfn /var/www/w2026-data/album /var/www/w2026/public/images/album
+fi
+
 # 5. Cài đặt dependencies và build Next.js
 echo ">>> [5/6] Cài đặt dependencies & Build Next.js..."
 cd /var/www/w2026

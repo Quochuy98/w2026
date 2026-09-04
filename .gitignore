@@ -7,4 +7,13 @@ coverage/
 playwright-report/
 test-results/
 .DS_Store
+# Uploaded album images & generated assets (Tách biệt dữ liệu Local & Live)
+public/images/album/*
+!public/images/album/.gitkeep
 public/images/generated/
+
+# Cấu hình vị trí ảnh & banner (Đã chuyển sang Supabase settings)
+content/banner.json
+
+# TypeScript build info
+*.tsbuildinfo
