@@ -55,28 +55,10 @@ if ! command -v caddy >/dev/null 2>&1; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y caddy
 fi
 
-# Cập nhật cấu hình Caddy cho cả domain và IP
-cat << 'EOF' | sudo tee /etc/caddy/Caddyfile
-wedding.quochuy.me {
-    handle /images/* {
-        root * /var/www/w2026/public
-        file_server
-    }
-    handle {
-        reverse_proxy 127.0.0.1:3000
-    }
-}
-
-:80 {
-    handle /images/* {
-        root * /var/www/w2026/public
-        file_server
-    }
-    handle {
-        reverse_proxy 127.0.0.1:3000
-    }
-}
-EOF
+# Cập nhật cấu hình Caddy tối ưu (nén zstd/gzip, security headers, cache ảnh)
+if [ -f /var/www/w2026/deploy/Caddyfile ]; then
+  sudo cp /var/www/w2026/deploy/Caddyfile /etc/caddy/Caddyfile
+fi
 sudo systemctl reload caddy || sudo systemctl restart caddy
 
 # 4.5. Đảm bảo thư mục lưu trữ ảnh độc lập (/var/www/w2026-data) và thư mục ảnh thật trong dự án
@@ -94,7 +76,7 @@ cp -r -u /var/www/w2026-data/album/* /var/www/w2026/public/images/album/ 2>/dev/
 # 5. Cài đặt dependencies và build Next.js
 echo ">>> [5/6] Cài đặt dependencies & Build Next.js..."
 cd /var/www/w2026
-npm install
+npm install --prefer-offline --no-audit
 npm run build
 
 # 6. Khởi động / Khởi động lại ứng dụng với PM2
