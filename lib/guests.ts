@@ -1,6 +1,6 @@
 import { type GuestInfo, type EventType } from "@/content/wedding";
 import { getSupabaseServerClient, isSupabaseConfigured } from "./supabase";
-import { getRandomNatureCode } from "./nature-codes";
+import { ALL_NATURE_CODES, getRandomNatureCode } from "./nature-codes";
 
 /**
  * Fallback mock guests for offline testing or when Supabase is not configured yet.
@@ -164,14 +164,39 @@ export async function listAllGuests(): Promise<GuestInfo[]> {
 }
 
 /**
+ * Tự động tạo mã mời ngẫu nhiên từ danh sách tên thiên nhiên.
+ * Ưu tiên chọn từ chưa dùng trong danh sách existingCodes.
+ * Nếu đã dùng hết toàn bộ từ đơn (>= 84 khách), tự động thêm hậu tố số ngẫu nhiên.
+ */
+export function generateUniqueGuestCode(existingCodes: Set<string>): string {
+  const unusedCodes = ALL_NATURE_CODES.filter((c) => !existingCodes.has(c.toLowerCase()));
+
+  if (unusedCodes.length > 0) {
+    const randomIndex = Math.floor(Math.random() * unusedCodes.length);
+    return unusedCodes[randomIndex];
+  }
+
+  // Nếu đã dùng hết từ đơn, thêm hậu tố số 2 chữ số (VD: swan-26)
+  return getRandomNatureCode(true);
+}
+
+/**
  * Thêm mới khách mời (cho Admin).
  */
 export async function createGuest(
   guest: Omit<GuestInfo, "id" | "viewCount" | "lastViewedAt">
 ): Promise<{ success: boolean; guest?: GuestInfo; error?: string }> {
-  const code = (guest.code || generateGuestCode()).trim().toLowerCase();
+  const isCustomCode = Boolean(guest.code && guest.code.trim());
+  const providedCode = (guest.code || "").trim().toLowerCase();
 
   if (!isSupabaseConfigured()) {
+    const existing = new Set(Object.keys(FALLBACK_GUESTS));
+    const code = isCustomCode ? providedCode : generateUniqueGuestCode(existing);
+
+    if (FALLBACK_GUESTS[code]) {
+      return { success: false, error: `Mã mời "${code}" đã tồn tại, vui lòng chọn mã khác.` };
+    }
+
     const newGuest: GuestInfo = {
       ...guest,
       code,
@@ -185,41 +210,91 @@ export async function createGuest(
     const supabase = getSupabaseServerClient();
     if (!supabase) throw new Error("Supabase client not available");
 
-    const { data, error } = await supabase
-      .from("guests")
-      .insert({
-        code,
-        name: guest.name.trim(),
-        salutation: guest.salutation || "Bạn",
-        event_type: guest.eventType || "wedding",
-        side: guest.side || "groom",
-        note: guest.note || null,
-      })
-      .select()
-      .single();
+    // 1. Trường hợp người dùng chủ động chỉ định mã tùy chọn:
+    if (isCustomCode) {
+      const { data, error } = await supabase
+        .from("guests")
+        .insert({
+          code: providedCode,
+          name: guest.name.trim(),
+          salutation: guest.salutation || "Bạn",
+          event_type: guest.eventType || "wedding",
+          side: guest.side || "groom",
+          note: guest.note || null,
+        })
+        .select()
+        .single();
 
-
-    if (error) {
-      if (error.code === "23505") {
-        return { success: false, error: "Mã khách mời này đã tồn tại, vui lòng chọn mã khác." };
+      if (error) {
+        if (error.code === "23505") {
+          return { success: false, error: `Mã mời "${providedCode}" đã được sử dụng, vui lòng chọn mã khác.` };
+        }
+        return { success: false, error: error.message };
       }
-      return { success: false, error: error.message };
+
+      return {
+        success: true,
+        guest: {
+          id: data.id,
+          code: data.code,
+          name: data.name,
+          salutation: data.salutation,
+          eventType: data.event_type as EventType,
+          side: data.side as "groom" | "bride",
+          note: data.note,
+          viewCount: data.view_count,
+          lastViewedAt: data.last_viewed_at,
+        },
+      };
     }
 
-    return {
-      success: true,
-      guest: {
-        id: data.id,
-        code: data.code,
-        name: data.name,
-        salutation: data.salutation,
-        eventType: data.event_type as EventType,
-        side: data.side as "groom" | "bride",
-        note: data.note,
-        viewCount: data.view_count,
-        lastViewedAt: data.last_viewed_at,
-      },
-    };
+    // 2. Trường hợp hệ thống tự động sinh mã (để trống mã mời tùy chọn):
+    // Lấy toàn bộ mã đang có trong database để lọc ra các mã CHƯA DÙNG
+    const { data: existingList } = await supabase.from("guests").select("code");
+    const existingCodes = new Set((existingList || []).map((row) => row.code.toLowerCase()));
+
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const autoCode = generateUniqueGuestCode(existingCodes);
+      existingCodes.add(autoCode); // Đánh dấu để lần lặp sau không chọn lại nếu có race condition
+
+      const { data, error } = await supabase
+        .from("guests")
+        .insert({
+          code: autoCode,
+          name: guest.name.trim(),
+          salutation: guest.salutation || "Bạn",
+          event_type: guest.eventType || "wedding",
+          side: guest.side || "groom",
+          note: guest.note || null,
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        return {
+          success: true,
+          guest: {
+            id: data.id,
+            code: data.code,
+            name: data.name,
+            salutation: data.salutation,
+            eventType: data.event_type as EventType,
+            side: data.side as "groom" | "bride",
+            note: data.note,
+            viewCount: data.view_count,
+            lastViewedAt: data.last_viewed_at,
+          },
+        };
+      }
+
+      // Nếu gặp lỗi khác không phải trùng mã (23505), dừng ngay
+      if (error && error.code !== "23505") {
+        return { success: false, error: error.message };
+      }
+    }
+
+    return { success: false, error: "Không thể tạo mã mời tự động không trùng lặp. Vui lòng thử lại." };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Lỗi kết nối cơ sở dữ liệu";
     return { success: false, error: message };

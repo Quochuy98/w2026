@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { type EventType, type GuestInfo } from "@/content/wedding";
-import { getRandomNatureCode } from "@/lib/nature-codes";
+import { ALL_NATURE_CODES, getRandomNatureCode } from "@/lib/nature-codes";
 import {
   Users,
   UserPlus,
@@ -35,7 +35,14 @@ export function GuestManager() {
   const [note, setNote] = useState("");
 
   const handleRandomizeCode = () => {
-    setCustomCode(getRandomNatureCode());
+    const existingCodes = new Set(guests.map((g) => g.code.toLowerCase()));
+    const unusedCodes = ALL_NATURE_CODES.filter((c) => !existingCodes.has(c.toLowerCase()));
+    if (unusedCodes.length > 0) {
+      const randomIndex = Math.floor(Math.random() * unusedCodes.length);
+      setCustomCode(unusedCodes[randomIndex]);
+    } else {
+      setCustomCode(getRandomNatureCode(true));
+    }
   };
 
 
@@ -150,6 +157,12 @@ export function GuestManager() {
       g.salutation.toLowerCase().includes(search.toLowerCase())
   );
 
+  const trimmedCustomCode = customCode.trim().toLowerCase();
+  const duplicateGuest = trimmedCustomCode
+    ? guests.find((g) => g.code.toLowerCase() === trimmedCustomCode)
+    : null;
+  const isCustomCodeDuplicate = Boolean(duplicateGuest);
+
   return (
     <div className="mt-8 space-y-12">
       {notice && (
@@ -258,21 +271,34 @@ export function GuestManager() {
                   placeholder="VD: rose, swan, koi, bamboo..."
                   value={customCode}
                   onChange={(e) => setCustomCode(e.target.value)}
-                  className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--background)] pl-3 pr-24 text-sm text-[var(--foreground)]"
+                  className={`w-full min-h-11 rounded-xl border ${
+                    isCustomCodeDuplicate
+                      ? "border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                      : "border-[var(--line)]"
+                  } bg-[var(--background)] pl-3 pr-24 text-sm text-[var(--foreground)]`}
                 />
                 <button
                   type="button"
                   onClick={handleRandomizeCode}
                   className="absolute right-1.5 px-3 py-1.5 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] text-xs font-medium text-[var(--foreground)] border border-[var(--line)] transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
-                  title="Tạo ngẫu nhiên tên loài hoa, chim, cá, cây bằng tiếng Anh"
+                  title="Tạo ngẫu nhiên tên loài hoa, chim, cá, cây bằng tiếng Anh (chưa dùng)"
                 >
                   <span>🎲</span>
                   <span>Random</span>
                 </button>
               </div>
-              <p className="mt-1.5 text-[11px] text-[var(--muted)]">
-                Để trống hệ thống sẽ tự động gán tên tiếng Anh của một loài hoa, chim, cá hoặc cây ngẫu nhiên (VD: rose, swan, koi, pine...).
-              </p>
+              {isCustomCodeDuplicate ? (
+                <p className="mt-1.5 text-[11px] font-medium text-rose-500 flex items-center gap-1">
+                  <span>⚠️</span>
+                  <span>
+                    Mã &quot;{trimmedCustomCode}&quot; đã được dùng cho khách &quot;{duplicateGuest?.salutation} {duplicateGuest?.name}&quot;. Vui lòng đổi mã khác.
+                  </span>
+                </p>
+              ) : (
+                <p className="mt-1.5 text-[11px] text-[var(--muted)]">
+                  Để trống hệ thống sẽ tự động gán tên tiếng Anh của một loài hoa, chim, cá hoặc cây ngẫu nhiên (VD: rose, swan, koi, pine...).
+                </p>
+              )}
             </div>
 
             <div>
@@ -291,7 +317,7 @@ export function GuestManager() {
 
           <button
             type="submit"
-            disabled={isPending || !name.trim()}
+            disabled={isPending || !name.trim() || isCustomCodeDuplicate}
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 text-sm font-semibold text-[var(--accent-contrast)] transition hover:bg-[var(--accent-strong)] disabled:opacity-40"
           >
             <Sparkle size={16} weight="fill" />

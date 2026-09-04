@@ -4,8 +4,10 @@ import {
   createGuest,
   deleteGuest,
   generateGuestCode,
+  generateUniqueGuestCode,
   FALLBACK_GUESTS,
 } from "@/lib/guests";
+import { ALL_NATURE_CODES } from "@/lib/nature-codes";
 
 describe("Guests Data & Invitation Logic", () => {
   it("tra cứu khách mời mặc định theo mã 232388 thành công", async () => {
@@ -33,6 +35,20 @@ describe("Guests Data & Invitation Logic", () => {
     expect(typeof code).toBe("string");
     expect(code.length).toBeGreaterThan(2);
     expect(code).toMatch(/^[a-z]+(-[a-z0-9]+)*$/);
+  });
+
+  it("generateUniqueGuestCode không bao giờ chọn mã đã tồn tại", () => {
+    const existing = new Set(["rose", "swan", "lotus"]);
+    for (let i = 0; i < 50; i++) {
+      const code = generateUniqueGuestCode(existing);
+      expect(existing.has(code)).toBe(false);
+    }
+  });
+
+  it("generateUniqueGuestCode tự động thêm hậu tố số khi tất cả từ đơn đã được dùng", () => {
+    const allUsed = new Set(ALL_NATURE_CODES.map((c: string) => c.toLowerCase()));
+    const code = generateUniqueGuestCode(allUsed);
+    expect(code).toMatch(/^[a-z]+-\d{2}$/);
   });
 
   it("tạo mới và xóa khách mời thành công trong fallback mode", async () => {
