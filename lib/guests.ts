@@ -324,6 +324,89 @@ export async function deleteGuest(code: string): Promise<boolean> {
   }
 }
 
+export interface UpdateGuestInput {
+  name?: string;
+  salutation?: string;
+  eventType?: EventType;
+  side?: "groom" | "bride";
+  note?: string;
+}
+
+/**
+ * Cập nhật thông tin khách mời (cho Admin).
+ */
+export async function updateGuest(
+  code: string,
+  input: UpdateGuestInput
+): Promise<{ success: boolean; guest?: GuestInfo; error?: string }> {
+  const cleanCode = code.trim().toLowerCase();
+
+  if (!isSupabaseConfigured()) {
+    const existing = FALLBACK_GUESTS[cleanCode];
+    if (!existing) {
+      return { success: false, error: `Không tìm thấy khách mời với mã "${cleanCode}".` };
+    }
+
+    const updated: GuestInfo = {
+      ...existing,
+      name: input.name !== undefined ? input.name.trim() : existing.name,
+      salutation: input.salutation !== undefined ? input.salutation : existing.salutation,
+      eventType: input.eventType !== undefined ? input.eventType : existing.eventType,
+      side: input.side !== undefined ? input.side : existing.side,
+      note: input.note !== undefined ? (input.note.trim() || undefined) : existing.note,
+    };
+
+    FALLBACK_GUESTS[cleanCode] = updated;
+    return { success: true, guest: updated };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    if (!supabase) throw new Error("Supabase client not available");
+
+    const updatePayload: Record<string, unknown> = {};
+    if (input.name !== undefined) updatePayload.name = input.name.trim();
+    if (input.salutation !== undefined) updatePayload.salutation = input.salutation;
+    if (input.eventType !== undefined) updatePayload.event_type = input.eventType;
+    if (input.side !== undefined) updatePayload.side = input.side;
+    if (input.note !== undefined) updatePayload.note = input.note.trim() || null;
+    updatePayload.updated_at = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from("guests")
+      .update(updatePayload)
+      .eq("code", cleanCode)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    if (!data) {
+      return { success: false, error: `Không tìm thấy khách mời với mã "${cleanCode}".` };
+    }
+
+    const updatedGuest: GuestInfo = {
+      id: data.id,
+      code: data.code,
+      name: data.name,
+      salutation: data.salutation,
+      eventType: data.event_type as EventType,
+      side: data.side as "groom" | "bride",
+      note: data.note,
+      viewCount: data.view_count,
+      lastViewedAt: data.last_viewed_at,
+    };
+
+    return { success: true, guest: updatedGuest };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Lỗi kết nối cơ sở dữ liệu";
+    return { success: false, error: message };
+  }
+}
+
+
 /**
  * Tự động tạo mã mời ngẫu nhiên theo tên các loài hoa, cá, chim, cây.
  */

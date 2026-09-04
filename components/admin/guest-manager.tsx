@@ -16,6 +16,9 @@ import {
   Eye,
   MagnifyingGlass,
   ArrowClockwise,
+  PencilSimple,
+  FloppyDisk,
+  X,
 } from "@phosphor-icons/react";
 
 export function GuestManager() {
@@ -33,6 +36,68 @@ export function GuestManager() {
   const [side, setSide] = useState<"groom" | "bride">("groom");
   const [customCode, setCustomCode] = useState("");
   const [note, setNote] = useState("");
+
+  // Edit Modal State
+  const [editingGuest, setEditingGuest] = useState<GuestInfo | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editSalutation, setEditSalutation] = useState("Bạn");
+  const [editEventType, setEditEventType] = useState<EventType>("wedding");
+  const [editSide, setEditSide] = useState<"groom" | "bride">("groom");
+  const [editNote, setEditNote] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const openEditModal = (guest: GuestInfo) => {
+    setEditingGuest(guest);
+    setEditName(guest.name);
+    setEditSalutation(guest.salutation || "Bạn");
+    setEditEventType(guest.eventType || "wedding");
+    setEditSide(guest.side || "groom");
+    setEditNote(guest.note || "");
+    setEditError(null);
+  };
+
+  const closeEditModal = () => {
+    setEditingGuest(null);
+    setEditError(null);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingGuest || !editName.trim()) return;
+
+    setIsSavingEdit(true);
+    setEditError(null);
+
+    try {
+      const res = await fetch("/api/guests", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: editingGuest.code,
+          name: editName.trim(),
+          salutation: editSalutation,
+          eventType: editEventType,
+          side: editSide,
+          note: editNote.trim(),
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.guest) {
+        setNotice(`Đã cập nhật thông tin khách mời "${editSalutation} ${editName}" (Mã: ${editingGuest.code})`);
+        setGuests((prev) => prev.map((item) => (item.code === data.guest.code ? data.guest : item)));
+        setEditingGuest(null);
+      } else {
+        setEditError(data.error || "Không thể cập nhật thông tin khách mời.");
+      }
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : "Lỗi hệ thống");
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
 
   const handleRandomizeCode = () => {
     const existingCodes = new Set(guests.map((g) => g.code.toLowerCase()));
@@ -452,7 +517,7 @@ export function GuestManager() {
                             href={`/${g.code}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center p-2 rounded-full border border-[var(--line)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)]"
+                            className="inline-flex items-center justify-center p-2 rounded-full border border-[var(--line)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] transition"
                             title="Mở xem thiệp"
                           >
                             <ArrowSquareOut size={14} />
@@ -460,8 +525,17 @@ export function GuestManager() {
 
                           <button
                             type="button"
+                            onClick={() => openEditModal(g)}
+                            className="inline-flex items-center justify-center p-2 rounded-full border border-[var(--line)] text-[var(--muted)] hover:text-[var(--foreground)] hover:border-[var(--accent)] hover:bg-[var(--surface-strong)] transition"
+                            title="Chỉnh sửa thông tin khách mời"
+                          >
+                            <PencilSimple size={14} />
+                          </button>
+
+                          <button
+                            type="button"
                             onClick={() => handleDelete(g.code, g.name)}
-                            className="inline-flex items-center justify-center p-2 rounded-full border border-red-200 text-red-500 hover:bg-red-50"
+                            className="inline-flex items-center justify-center p-2 rounded-full border border-red-200 text-red-500 hover:bg-red-50 transition"
                             title="Xóa khách"
                           >
                             <Trash size={14} />
@@ -476,6 +550,144 @@ export function GuestManager() {
           </div>
         )}
       </section>
+
+      {/* Edit Guest Modal */}
+      {editingGuest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-lg rounded-3xl border border-[var(--line)] bg-[var(--background)] p-6 shadow-2xl space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+              <div className="flex items-center gap-2">
+                <PencilSimple size={20} className="text-[var(--accent)]" weight="bold" />
+                <h3 className="font-display text-xl text-[var(--foreground)]">
+                  Chỉnh Sửa Thông Tin Khách Mời
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={closeEditModal}
+                className="rounded-full p-1.5 text-[var(--muted)] hover:bg-[var(--surface-strong)] transition"
+                title="Đóng"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[var(--surface-strong)] border border-[var(--line)] text-xs text-[var(--muted)]">
+              <span>Mã mời (link cố định):</span>
+              <span className="font-mono font-bold text-sm text-[var(--accent-strong)]">/{editingGuest.code}</span>
+              <span className="text-[11px] italic ml-auto text-emerald-600 font-medium">Link không đổi khi sửa</span>
+            </div>
+
+            {editError && (
+              <div role="alert" className="rounded-xl border border-rose-300 bg-rose-50 dark:bg-rose-950/40 p-3 text-xs text-rose-700 dark:text-rose-300">
+                {editError}
+              </div>
+            )}
+
+            <form onSubmit={handleUpdate} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-1.5">
+                    Danh Xưng
+                  </label>
+                  <select
+                    value={editSalutation}
+                    onChange={(e) => setEditSalutation(e.target.value)}
+                    className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-sm text-[var(--foreground)]"
+                  >
+                    <option value="Bạn">Bạn</option>
+                    <option value="Anh">Anh</option>
+                    <option value="Chị">Chị</option>
+                    <option value="Em">Em</option>
+                    <option value="Cô">Cô</option>
+                    <option value="Chú">Chú</option>
+                    <option value="Bác">Bác</option>
+                    <option value="Cô Chú">Cô Chú</option>
+                    <option value="Vợ Chồng">Vợ Chồng</option>
+                    <option value="Gia đình">Gia đình</option>
+                  </select>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-1.5">
+                    Tên Khách Mời *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-sm text-[var(--foreground)]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-1.5">
+                    Sự Kiện Mời
+                  </label>
+                  <select
+                    value={editEventType}
+                    onChange={(e) => setEditEventType(e.target.value as EventType)}
+                    className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-sm text-[var(--foreground)]"
+                  >
+                    <option value="wedding">Lễ Cưới (Tư gia Vĩnh Long)</option>
+                    <option value="reception">Tiệc Báo Hỷ (Unique Quận 7)</option>
+                    <option value="both">Cả 2 Sự Kiện (Lễ Cưới &amp; Báo Hỷ)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-1.5">
+                    Khách Bên Nào
+                  </label>
+                  <select
+                    value={editSide}
+                    onChange={(e) => setEditSide(e.target.value as "groom" | "bride")}
+                    className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-sm text-[var(--foreground)]"
+                  >
+                    <option value="groom">Nhà Trai (Quốc Huy)</option>
+                    <option value="bride">Nhà Gái (Hoài Thương)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)] mb-1.5">
+                  Ghi Chú Nội Bộ (Không bắt buộc)
+                </label>
+                <input
+                  type="text"
+                  placeholder="VD: Bạn thân đại học, Bàn 03..."
+                  value={editNote}
+                  onChange={(e) => setEditNote(e.target.value)}
+                  className="w-full min-h-11 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-sm text-[var(--foreground)]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--line)]">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="rounded-full border border-[var(--line)] px-4 py-2 text-xs font-semibold text-[var(--foreground)] hover:bg-[var(--surface-strong)] transition cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingEdit || !editName.trim()}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-5 py-2 text-xs font-semibold text-[var(--accent-contrast)] transition hover:bg-[var(--accent-strong)] disabled:opacity-40 cursor-pointer"
+                >
+                  <FloppyDisk size={15} weight="fill" />
+                  <span>{isSavingEdit ? "Đang lưu..." : "Lưu thay đổi"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

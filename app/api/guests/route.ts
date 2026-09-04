@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminSessionFromCookieHeader } from "@/lib/auth/session";
-import { listAllGuests, createGuest, deleteGuest } from "@/lib/guests";
+import { listAllGuests, createGuest, deleteGuest, updateGuest } from "@/lib/guests";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -83,3 +83,40 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     return json({ error: message }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request): Promise<NextResponse> {
+  const cookieHeader = request.headers.get("cookie");
+  const session = getAdminSessionFromCookieHeader(cookieHeader);
+  if (!session) {
+    return json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    if (!body.code || typeof body.code !== "string" || !body.code.trim()) {
+      return json({ error: "Mã khách mời không hợp lệ" }, { status: 400 });
+    }
+
+    if (!body.name || typeof body.name !== "string" || !body.name.trim()) {
+      return json({ error: "Tên khách mời không được để trống" }, { status: 400 });
+    }
+
+    const result = await updateGuest(body.code.trim(), {
+      name: body.name.trim(),
+      salutation: body.salutation || "Bạn",
+      eventType: body.eventType === "reception" ? "reception" : body.eventType === "both" ? "both" : "wedding",
+      side: body.side === "bride" ? "bride" : "groom",
+      note: typeof body.note === "string" ? body.note : undefined,
+    });
+
+    if (!result.success) {
+      return json({ error: result.error || "Không thể cập nhật thông tin khách mời" }, { status: 400 });
+    }
+
+    return json({ guest: result.guest });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Internal Server Error";
+    return json({ error: message }, { status: 500 });
+  }
+}
+

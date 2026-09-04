@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   getGuestByCode,
   createGuest,
+  updateGuest,
   deleteGuest,
   generateGuestCode,
   generateUniqueGuestCode,
@@ -126,4 +127,53 @@ describe("Guests Data & Invitation Logic", () => {
     expect(defaultEvent.venue).toBe("Tư Gia Nhà Trai");
     expect(defaultEvent.shortDate).toBe("22.09.2026");
   });
+
+  it("cập nhật thông tin khách mời thành công và giữ nguyên mã code", async () => {
+    const editCode = "test-edit-guest";
+    // Tạo khách ban đầu
+    const created = await createGuest({
+      code: editCode,
+      name: "Khách Cũ",
+      salutation: "Bạn",
+      eventType: "wedding",
+      side: "groom",
+      note: "Ghi chú ban đầu",
+    });
+    expect(created.success).toBe(true);
+
+    // Chỉnh sửa sang thông tin mới (đổi tên, danh xưng, sự kiện, nhà gái, ghi chú)
+    const updateResult = await updateGuest(editCode, {
+      name: "Khách Đã Sửa",
+      salutation: "Anh",
+      eventType: "reception",
+      side: "bride",
+      note: "Ghi chú đã cập nhật",
+    });
+
+    expect(updateResult.success).toBe(true);
+    expect(updateResult.guest?.code).toBe(editCode);
+    expect(updateResult.guest?.name).toBe("Khách Đã Sửa");
+    expect(updateResult.guest?.salutation).toBe("Anh");
+    expect(updateResult.guest?.eventType).toBe("reception");
+    expect(updateResult.guest?.side).toBe("bride");
+    expect(updateResult.guest?.note).toBe("Ghi chú đã cập nhật");
+
+    // Kiểm tra tra cứu lại bằng getGuestByCode
+    const fetched = await getGuestByCode(editCode);
+    expect(fetched?.name).toBe("Khách Đã Sửa");
+    expect(fetched?.side).toBe("bride");
+    expect(fetched?.eventType).toBe("reception");
+
+    // Dọn dẹp
+    await deleteGuest(editCode);
+  });
+
+  it("cập nhật khách mời không tồn tại trả về lỗi", async () => {
+    const result = await updateGuest("ma-khong-ton-tai-12345", {
+      name: "Tên Mới",
+    });
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Không tìm thấy");
+  });
 });
+
