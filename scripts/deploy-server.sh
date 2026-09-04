@@ -79,18 +79,17 @@ wedding.quochuy.me {
 EOF
 sudo systemctl reload caddy || sudo systemctl restart caddy
 
-# 4.5. Đảm bảo thư mục lưu trữ ảnh độc lập (/var/www/w2026-data) và Symlink an toàn
-echo ">>> [4.5/6] Kiểm tra cấu trúc lưu trữ ảnh độc lập (/var/www/w2026-data)..."
+# 4.5. Đảm bảo thư mục lưu trữ ảnh độc lập (/var/www/w2026-data) và thư mục ảnh thật trong dự án
+echo ">>> [4.5/6] Đồng bộ thư mục lưu trữ ảnh độc lập (/var/www/w2026-data)..."
 sudo mkdir -p /var/www/w2026-data/album
 sudo chown -R ubuntu:ubuntu /var/www/w2026-data
-mkdir -p /var/www/w2026/public/images
-if [ ! -L /var/www/w2026/public/images/album ]; then
-  if [ -d /var/www/w2026/public/images/album ]; then
-    cp -r -n /var/www/w2026/public/images/album/* /var/www/w2026-data/album/ 2>/dev/null || true
-    rm -rf /var/www/w2026/public/images/album
-  fi
-  ln -sfn /var/www/w2026-data/album /var/www/w2026/public/images/album
+# Turbopack trong Next.js 16 không cho phép symlink trỏ ra ngoài project root, do đó public/images/album phải là thư mục thật
+if [ -L /var/www/w2026/public/images/album ]; then
+  rm -f /var/www/w2026/public/images/album
 fi
+mkdir -p /var/www/w2026/public/images/album
+cp -r -u /var/www/w2026-data/album/* /var/www/w2026/public/images/album/ 2>/dev/null || true
+
 
 # 5. Cài đặt dependencies và build Next.js
 echo ">>> [5/6] Cài đặt dependencies & Build Next.js..."

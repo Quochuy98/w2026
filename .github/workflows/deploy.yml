@@ -30,8 +30,12 @@ jobs:
             git fetch --all
             git checkout master
             git reset --hard origin/master
-            mkdir -p public/images
-            ln -sfn /var/www/w2026-data/album public/images/album
+            # Đảm bảo public/images/album là thư mục thật (Turbopack trong Next.js 16 cấm symlink trỏ ra ngoài)
+            if [ -L public/images/album ]; then
+              rm -f public/images/album
+            fi
+            mkdir -p public/images/album
+            cp -r -u /var/www/w2026-data/album/* public/images/album/ 2>/dev/null || true
             if [ -n "${{ secrets.ENV_LOCAL }}" ]; then
               printf "%s\n" "${{ secrets.ENV_LOCAL }}" > .env.local
             fi

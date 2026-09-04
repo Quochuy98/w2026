@@ -9,6 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const ALBUM_DIR = path.join(process.cwd(), "public/images/album");
+const PERSISTENT_DATA_DIR = "/var/www/w2026-data/album";
 const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".heic"]);
 
 function json(data: unknown, init?: ResponseInit): NextResponse {
@@ -83,10 +84,20 @@ export async function POST(request: Request): Promise<NextResponse> {
           .toBuffer();
 
         await fs.writeFile(destinationPath, optimizedBuffer);
+        try {
+          await fs.writeFile(path.join(PERSISTENT_DATA_DIR, safeFileName), optimizedBuffer);
+        } catch {
+          // Bỏ qua nếu thư mục này không tồn tại (ví dụ ở môi trường dev local)
+        }
         uploadedNames.push(safeFileName);
       } catch {
         const fallbackName = `${baseName}${ext}`;
         await fs.writeFile(path.join(ALBUM_DIR, fallbackName), buffer);
+        try {
+          await fs.writeFile(path.join(PERSISTENT_DATA_DIR, fallbackName), buffer);
+        } catch {
+          // Bỏ qua nếu không có
+        }
         uploadedNames.push(fallbackName);
       }
     }
@@ -131,6 +142,11 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
     try {
       await fs.unlink(targetPath);
+      try {
+        await fs.unlink(path.join(PERSISTENT_DATA_DIR, safeFileName));
+      } catch {
+        // Bỏ qua
+      }
     } catch {
       return json({ error: "Không tìm thấy file ảnh để xóa" }, { status: 404 });
     }

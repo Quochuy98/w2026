@@ -21,6 +21,12 @@ echo "=========================================================="
 # 1. Tạo thư mục lưu trữ backup
 mkdir -p "${BACKUP_DIR}"
 
+# 1.5. Đồng bộ ảnh mới nhất từ dự án vào thư mục lưu trữ độc lập
+if [ -d "${APP_DIR}/public/images/album" ]; then
+  mkdir -p "${DATA_DIR}/album"
+  cp -r -u "${APP_DIR}/public/images/album"/* "${DATA_DIR}/album/" 2>/dev/null || true
+fi
+
 # 2. Xác định thư mục ảnh cần nén
 ALBUM_PATH="${DATA_DIR}/album"
 if [ ! -d "${ALBUM_PATH}" ]; then
