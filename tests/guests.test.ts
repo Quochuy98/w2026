@@ -107,6 +107,8 @@ describe("Guests Data & Invitation Logic", () => {
     expect(brideEvent.venue).toBe("Tư Gia Nhà Gái");
     expect(brideEvent.shortDate).toBe("21.09.2026");
     expect(brideEvent.dateLabel).toContain("Thứ Hai, ngày 21 tháng 09 năm 2026");
+    expect(brideEvent.timeLabel).toBe("14:00");
+    expect(brideEvent.dateIso).toContain("14:00:00");
     expect(brideEvent.lunarDate).toContain("11 tháng 08");
     expect(brideEvent.address).toContain("Ấp Tân Thị, Xã Tân Hào, Tỉnh Vĩnh Long");
   });

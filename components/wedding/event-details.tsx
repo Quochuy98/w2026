@@ -108,7 +108,8 @@ function EventCard({ event }: { event: WeddingEvent }) {
               )}
               {!event.welcomeTime && (
                 <p className="text-xs text-[var(--muted)] mt-0.5">
-                  Hôn lễ bắt đầu lúc: <span className="font-medium text-[var(--foreground)]">{event.timeLabel}</span>
+                  {event.badge === "Lễ Vu Quy" ? "Giờ đãi khách: " : "Hôn lễ bắt đầu lúc: "}
+                  <span className="font-medium text-[var(--foreground)]">{event.timeLabel}</span>
                 </p>
               )}
             </div>
