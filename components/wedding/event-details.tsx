@@ -1,6 +1,6 @@
 "use client";
 
-import { weddingConfig, type GuestInfo, type WeddingEvent } from "@/content/wedding";
+import { weddingConfig, getWeddingEvent, type GuestInfo, type WeddingEvent } from "@/content/wedding";
 import { Reveal } from "./reveal";
 import {
   CalendarPlus,
@@ -59,7 +59,10 @@ function downloadIcsFile(event: WeddingEvent) {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", `${event.type === "wedding" ? "le-cuoi-tu-gia" : "tiec-bao-hy"}.ics`);
+  const fileName = event.type === "wedding" 
+    ? (event.badge === "Lễ Vu Quy" ? "le-vu-quy-tu-gia" : "le-thanh-hon-tu-gia") 
+    : "tiec-bao-hy";
+  link.setAttribute("download", `${fileName}.ics`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -178,10 +181,9 @@ function EventCard({ event }: { event: WeddingEvent }) {
           type="button"
           onClick={() => downloadIcsFile(event)}
           className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-xs font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-strong)] active:scale-[0.98]"
-          title="Tải file nhắc lịch Apple Calendar / Outlook (.ics)"
         >
           <CalendarCheck size={14} weight="bold" />
-          <span>Apple / ICS</span>
+          <span>Tải lịch (.ics)</span>
         </button>
       </div>
     </div>
@@ -189,12 +191,14 @@ function EventCard({ event }: { event: WeddingEvent }) {
 }
 
 export function EventDetails({ guest }: EventDetailsProps) {
-  const { wedding, reception } = weddingConfig.events;
+  const wedding = getWeddingEvent(guest?.side);
+  const { reception } = weddingConfig.events;
   const eventType = guest?.eventType;
+  const isBride = guest?.side === "bride";
 
   // Khi có mã khách mời:
-  // - "wedding": chỉ hiển thị Lễ Cưới tư gia
-  // - "reception": chỉ hiển thị Tiệc Báo Hỷ
+  // - "wedding": chỉ hiển thị Lễ Cưới tư gia (Nhà Trai: 22/09, Nhà Gái: 21/09)
+  // - "reception": chỉ hiển thị Tiệc Báo Hỷ (26/09)
   // - "both" hoặc không có guest: hiển thị cả hai sự kiện
   const showWedding = guest ? eventType === "wedding" || eventType === "both" : true;
   const showReception = guest ? eventType === "reception" || eventType === "both" : true;
@@ -213,7 +217,9 @@ export function EventDetails({ guest }: EventDetailsProps) {
           className="font-display text-4xl leading-[1.05] tracking-[-0.04em] text-[var(--foreground)] sm:text-5xl lg:text-6xl"
         >
           {isSingle && showWedding
-            ? "Thông Tin Lễ Cưới Tư Gia"
+            ? isBride
+              ? "Thông Tin Lễ Vu Quy Tư Gia"
+              : "Thông Tin Lễ Thành Hôn Tư Gia"
             : isSingle && showReception
             ? "Thông Tin Tiệc Mừng Báo Hỷ"
             : "Thông Tin Tiệc Cưới"}

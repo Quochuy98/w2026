@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { weddingConfig, type AlbumImage, type GuestInfo, type WeddingSlot } from "@/content/wedding";
+import { weddingConfig, getWeddingEvent, type AlbumImage, type GuestInfo, type WeddingSlot } from "@/content/wedding";
 import { AlbumImageView } from "./album-image";
 import { EnvelopeSimpleOpen, Sparkle, Heart } from "@phosphor-icons/react";
 
@@ -11,6 +11,7 @@ interface InvitationHeroProps {
 }
 
 export function InvitationHero({ slots, guest }: InvitationHeroProps) {
+  const weddingEvent = getWeddingEvent(guest?.side);
   // Easing mượt mà chuẩn điện ảnh cho hiệu ứng trình chiếu
   const slideEase = [0.16, 1, 0.3, 1] as const;
 
@@ -125,14 +126,14 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                 transition={{ duration: 0.85, delay: 0.85, ease: slideEase }}
               >
                 <time
-                  dateTime={weddingConfig.events.wedding.dateIso.slice(0, 10)}
+                  dateTime={weddingEvent.dateIso.slice(0, 10)}
                   className="font-display text-2xl tracking-[-0.03em] text-[var(--foreground)] sm:text-3xl"
                 >
-                  {weddingConfig.events.wedding.shortDate}
+                  {weddingEvent.shortDate}
                 </time>
                 <span aria-hidden className="h-px w-10 bg-[var(--accent)]" />
                 <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
-                  {weddingConfig.events.wedding.locationCity}
+                  {weddingEvent.locationCity}
                 </span>
               </motion.div>
             ) : guest?.eventType === "reception" ? (
@@ -155,7 +156,7 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
               </motion.div>
             ) : (
               <div className="mt-4 space-y-2 sm:mt-7 sm:space-y-2.5">
-                {/* 22.09.2026 Tỉnh Vĩnh Long - Chạy từ bên TRÁI vào */}
+                {/* Vĩnh Long - Chạy từ bên TRÁI vào */}
                 <motion.div
                   className="flex items-center gap-3"
                   initial={{ x: -80, opacity: 0 }}
@@ -163,14 +164,14 @@ export function InvitationHero({ slots, guest }: InvitationHeroProps) {
                   transition={{ duration: 0.85, delay: 0.85, ease: slideEase }}
                 >
                   <time
-                    dateTime={weddingConfig.events.wedding.dateIso.slice(0, 10)}
+                    dateTime={weddingEvent.dateIso.slice(0, 10)}
                     className="font-display text-2xl tracking-[-0.03em] text-[var(--foreground)] sm:text-3xl"
                   >
-                    {weddingConfig.events.wedding.shortDate}
+                    {weddingEvent.shortDate}
                   </time>
                   <span aria-hidden className="h-px w-8 bg-[var(--accent)]" />
                   <span className="text-xs uppercase tracking-[0.18em] text-[var(--foreground)] font-semibold">
-                    {weddingConfig.events.wedding.locationCity}
+                    {weddingEvent.locationCity}
                   </span>
                 </motion.div>
 

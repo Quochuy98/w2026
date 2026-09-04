@@ -11,15 +11,20 @@ const units = [
   { key: "seconds", label: "Giây" },
 ] as const;
 
-export function Countdown() {
-  const [state, setState] = useState<CountdownState>(() => getCountdownState(Date.now()));
+interface CountdownProps {
+  targetIso?: string;
+}
+
+export function Countdown({ targetIso }: CountdownProps = {}) {
+  const targetMs = targetIso ? Date.parse(targetIso) : Date.parse(WEDDING_INSTANT);
+  const [state, setState] = useState<CountdownState>(() => getCountdownState(Date.now(), targetMs));
 
   useEffect(() => {
-    const update = () => setState(getCountdownState(Date.now()));
+    const update = () => setState(getCountdownState(Date.now(), targetMs));
     update();
     const timer = window.setInterval(update, 1_000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [targetMs]);
 
   return (
     <section aria-labelledby="countdown-title" className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">

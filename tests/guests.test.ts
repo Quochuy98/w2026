@@ -8,6 +8,7 @@ import {
   FALLBACK_GUESTS,
 } from "@/lib/guests";
 import { ALL_NATURE_CODES } from "@/lib/nature-codes";
+import { getWeddingEvent } from "@/content/wedding";
 
 describe("Guests Data & Invitation Logic", () => {
   it("tra cứu khách mời mặc định theo mã 232388 thành công", async () => {
@@ -98,5 +99,29 @@ describe("Guests Data & Invitation Logic", () => {
     expect(fetched?.eventType).toBe("both");
 
     await deleteGuest(code);
+  });
+
+  it("trả về thông tin Lễ Vu Quy (Nhà Gái - 21/09/2026 tại Ấp Tân Thị, Xã Tân Hào) khi side='bride'", () => {
+    const brideEvent = getWeddingEvent("bride");
+    expect(brideEvent.badge).toBe("Lễ Vu Quy");
+    expect(brideEvent.venue).toBe("Tư Gia Nhà Gái");
+    expect(brideEvent.shortDate).toBe("21.09.2026");
+    expect(brideEvent.dateLabel).toContain("Thứ Hai, ngày 21 tháng 09 năm 2026");
+    expect(brideEvent.lunarDate).toContain("11 tháng 08");
+    expect(brideEvent.address).toContain("Ấp Tân Thị, Xã Tân Hào, Tỉnh Vĩnh Long");
+  });
+
+  it("trả về thông tin Lễ Thành Hôn (Nhà Trai - 22/09/2026 tại Ấp Hưng An Tây) khi side='groom' hoặc không truyền", () => {
+    const groomEvent = getWeddingEvent("groom");
+    expect(groomEvent.badge).toBe("Lễ Thành Hôn");
+    expect(groomEvent.venue).toBe("Tư Gia Nhà Trai");
+    expect(groomEvent.shortDate).toBe("22.09.2026");
+    expect(groomEvent.dateLabel).toContain("Thứ Ba, ngày 22 tháng 09 năm 2026");
+    expect(groomEvent.lunarDate).toContain("12 tháng 08");
+    expect(groomEvent.address).toContain("Hưng An Tây");
+
+    const defaultEvent = getWeddingEvent();
+    expect(defaultEvent.venue).toBe("Tư Gia Nhà Trai");
+    expect(defaultEvent.shortDate).toBe("22.09.2026");
   });
 });

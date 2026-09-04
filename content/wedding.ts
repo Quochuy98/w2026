@@ -146,6 +146,7 @@ export interface WeddingConfig {
   family: FamilyConfig;
   events: {
     wedding: WeddingEvent;
+    brideWedding?: WeddingEvent;
     reception: WeddingEvent;
   };
   gift: BankAccount;
@@ -215,7 +216,7 @@ export const weddingConfig: WeddingConfig = {
       type: "wedding",
       title: "Lễ Thành Hôn & Tiệc Cưới Tư Gia",
       subTitle: "Hôn lễ cử hành tại tư gia nhà trai",
-      badge: "Lễ Cưới Tư Gia",
+      badge: "Lễ Thành Hôn",
       shortDate: "22.09.2026",
       locationCity: "Tỉnh Vĩnh Long",
       dateLabel: "Thứ Ba, ngày 22 tháng 09 năm 2026",
@@ -225,6 +226,22 @@ export const weddingConfig: WeddingConfig = {
       venue: "Tư Gia Nhà Trai",
       address: "139 Ấp Hưng An Tây, Xã Hưng Nhượng, Tỉnh Vĩnh Long",
       mapUrl: "https://maps.google.com/?q=Hưng+Nhượng,+Tỉnh+Vĩnh+Long",
+      note: "Sự hiện diện của Quý khách là niềm vinh hạnh lớn cho toàn thể gia đình chúng tôi.",
+    },
+    brideWedding: {
+      type: "wedding",
+      title: "Lễ Vu Quy & Tiệc Cưới Tư Gia",
+      subTitle: "Hôn lễ cử hành tại tư gia nhà gái",
+      badge: "Lễ Vu Quy",
+      shortDate: "21.09.2026",
+      locationCity: "Tỉnh Vĩnh Long",
+      dateLabel: "Thứ Hai, ngày 21 tháng 09 năm 2026",
+      dateIso: "2026-09-21T11:00:00+07:00",
+      timeLabel: "10:00",
+      lunarDate: "Ngày 11 tháng 08 Năm Bính Ngọ",
+      venue: "Tư Gia Nhà Gái",
+      address: "Ấp Tân Thị, Xã Tân Hào, Tỉnh Vĩnh Long",
+      mapUrl: "https://maps.google.com/?q=%E1%BA%A4p+T%C3%A2n+Th%E1%BB%8B,+X%C3%A3+T%C3%A2n+H%C3%A0o,+T%E1%BB%89nh+V%C3%A9nh+Long",
       note: "Sự hiện diện của Quý khách là niềm vinh hạnh lớn cho toàn thể gia đình chúng tôi.",
     },
     reception: {
@@ -277,6 +294,15 @@ export const WEDDING = weddingConfig;
 export const wedding = weddingConfig;
 export const weddingContent = weddingConfig;
 
+/**
+ * Lấy thông tin sự kiện cưới tư gia theo phía nhà (Nhà Trai: 22/09/2026, Nhà Gái: 21/09/2026).
+ */
+export function getWeddingEvent(side?: "groom" | "bride" | null): WeddingEvent {
+  if (side === "bride" && weddingConfig.events.brideWedding) {
+    return weddingConfig.events.brideWedding;
+  }
+  return weddingConfig.events.wedding;
+}
 
 export const SLOT_LABELS: Record<WeddingSlot, string> = {
   hero: "Ảnh bìa",

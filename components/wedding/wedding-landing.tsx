@@ -1,6 +1,7 @@
 import {
   WEDDING_SLOTS,
   weddingConfig,
+  getWeddingEvent,
   type AlbumImage,
   type GuestInfo,
   type WeddingSlot,
@@ -27,6 +28,10 @@ type WeddingLandingProps = {
 
 export function WeddingLanding({ images, slots, isFallback, guest, groomCrop, brideCrop }: WeddingLandingProps) {
   const remaining = images.filter((image) => !WEDDING_SLOTS.some((slot) => slots[slot]?.id === image.id));
+  const weddingEvent = getWeddingEvent(guest?.side);
+  const countdownTargetIso = guest?.eventType === "reception"
+    ? weddingConfig.events.reception.dateIso
+    : weddingEvent.dateIso;
 
   return (
     <main className="overflow-clip">
@@ -38,7 +43,7 @@ export function WeddingLanding({ images, slots, isFallback, guest, groomCrop, br
 
 
       {/* 3. Bộ Đếm Ngược Ngày Cưới */}
-      <Countdown />
+      <Countdown targetIso={countdownTargetIso} />
 
       {/* 4. Thời Gian & Địa Điểm Sự Kiện (Tư Gia / Báo Hỷ) */}
       <EventDetails guest={guest} />
