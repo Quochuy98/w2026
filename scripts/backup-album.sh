@@ -13,6 +13,8 @@ TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 DATE_READABLE=$(date +"%d/%m/%Y %H:%M:%S")
 ARCHIVE_NAME="w2026_album_backup_${TIMESTAMP}.tar.gz"
 ARCHIVE_PATH="${BACKUP_DIR}/${ARCHIVE_NAME}"
+DRIVE_REMOTE="${RCLONE_DRIVE_REMOTE:-wedding-drive}"
+DRIVE_PATH="${RCLONE_DRIVE_PATH:-Wedding Backup/W2026}"
 
 echo "=========================================================="
 echo ">>> [${DATE_READABLE}] Bắt đầu tiến trình Backup..."
@@ -90,7 +92,22 @@ else
   echo ">>> [GỢI Ý] Chưa cấu hình TELEGRAM_BOT_TOKEN & TELEGRAM_CHAT_ID. Bản backup chỉ được lưu trên server."
 fi
 
-# 5. Dọn dẹp bản backup cũ quá 7 ngày để tiết kiệm dung lượng ổ cứng
+# 5. Tải archive lên Google Drive nếu remote đã được cấu hình.
+if command -v rclone >/dev/null 2>&1 && rclone listremotes | grep -qx "${DRIVE_REMOTE}:"; then
+  echo ">>> Đang tải bản backup lên Google Drive: ${DRIVE_PATH}/${ARCHIVE_NAME}..."
+  if rclone copyto "${ARCHIVE_PATH}" "${DRIVE_REMOTE}:${DRIVE_PATH}/${ARCHIVE_NAME}" \
+    --checkers 4 \
+    --retries 3 \
+    --low-level-retries 10; then
+    echo ">>> Đã tải backup lên Google Drive thành công!"
+  else
+    echo ">>> [CẢNH BÁO] Không thể tải Google Drive. Bản backup cục bộ vẫn được giữ lại."
+  fi
+else
+  echo ">>> [GỢI Ý] Chưa cấu hình remote Google Drive. Bỏ qua tải bản sao đám mây."
+fi
+
+# 6. Dọn dẹp bản backup cũ quá 7 ngày để tiết kiệm dung lượng ổ cứng
 echo ">>> Dọn dẹp các bản backup cũ hơn 7 ngày..."
 find "${BACKUP_DIR}" -name "w2026_album_backup_*.tar.gz" -type f -mtime +7 -delete || true
 
