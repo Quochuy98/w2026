@@ -178,8 +178,9 @@ test.describe("wedding landing", () => {
     const response = await page.goto("/khong-ton-tai", { waitUntil: "domcontentloaded" });
 
     expect(response?.status()).toBe(404);
-    await expect(page.getByRole("heading", { name: "Có lẽ đường dẫn này đã lạc mất" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Về trang thiệp cưới" })).toHaveAttribute("href", "/");
+    await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
+    await expect(page.getByText("Đường dẫn bạn truy cập không tồn tại hoặc đã được thay đổi.")).toBeVisible();
+    await expect(page.getByRole("link")).toHaveCount(0);
 
     const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
     await expect(mascot).toBeVisible();
@@ -192,7 +193,7 @@ test.describe("wedding landing", () => {
 
     const invitationResponse = await page.goto("/khong-ton-tai/abc", { waitUntil: "domcontentloaded" });
     expect(invitationResponse?.status()).toBe(404);
-    await expect(page.getByRole("heading", { name: "Có lẽ đường dẫn này đã lạc mất" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
   });
 
   test("keeps the mascot still when reduced motion is requested", async ({ page }) => {
