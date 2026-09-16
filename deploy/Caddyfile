@@ -23,6 +23,23 @@ wedding.quochuy.me {
     }
 }
 
+cockpit.quochuy.me {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    reverse_proxy https://127.0.0.1:9090 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
 :80 {
     encode zstd gzip
 
