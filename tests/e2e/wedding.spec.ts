@@ -174,6 +174,39 @@ test.describe("wedding landing", () => {
     await expect(firstReveal).toHaveCSS("transform", "none");
   });
 
+  test("uses the wedding not-found page for unknown paths and invitation codes", async ({ page }) => {
+    const response = await page.goto("/khong-ton-tai", { waitUntil: "domcontentloaded" });
+
+    expect(response?.status()).toBe(404);
+    await expect(page.getByRole("heading", { name: "Có lẽ đường dẫn này đã lạc mất" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Về trang thiệp cưới" })).toHaveAttribute("href", "/");
+
+    const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
+    await expect(mascot).toBeVisible();
+    await mascot.focus();
+    await expect(mascot).toBeFocused();
+    await mascot.click();
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+    expect(overflow).toBe(true);
+
+    const invitationResponse = await page.goto("/khong-ton-tai/abc", { waitUntil: "domcontentloaded" });
+    expect(invitationResponse?.status()).toBe(404);
+    await expect(page.getByRole("heading", { name: "Có lẽ đường dẫn này đã lạc mất" })).toBeVisible();
+  });
+
+  test("keeps the mascot still when reduced motion is requested", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/khong-ton-tai", { waitUntil: "domcontentloaded" });
+
+    const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
+    await mascot.click();
+    await expect(mascot).toBeVisible();
+
+    const animationCount = await mascot.evaluate((node) => node.querySelector("span")?.getAnimations().length ?? 0);
+    expect(animationCount).toBe(0);
+  });
+
   test("redirects anonymous visitors to admin login", async ({ page }) => {
     const response = await page.request.get("/admin", { maxRedirects: 0 });
 

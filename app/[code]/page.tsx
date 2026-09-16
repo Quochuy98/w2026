@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getPublicAlbumState } from "@/lib/gallery";
 import { getGuestByCode, incrementGuestView } from "@/lib/guests";
 
@@ -17,46 +18,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
   const bannerImageUrl = `${siteUrl}/og/og-banner.jpg`;
 
-  if (guest) {
-    const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
-    const description = `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`;
-
-    return {
-      title,
-      description,
-      openGraph: {
-        title,
-        description,
-        url: `${siteUrl}/${code}`,
-        siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
-        locale: "vi_VN",
-        type: "website",
-        images: [
-          {
-            url: bannerImageUrl,
-            secureUrl: bannerImageUrl,
-            width: 1200,
-            height: 630,
-            alt: title,
-            type: "image/jpeg",
-          },
-        ],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [bannerImageUrl],
-      },
-    };
+  if (!guest) {
+    notFound();
   }
 
+  const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
+  const description = `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`;
+
   return {
-    title: weddingConfig.seo.title,
-    description: weddingConfig.seo.description,
+    title,
+    description,
     openGraph: {
-      title: weddingConfig.seo.title,
-      description: weddingConfig.seo.description,
+      title,
+      description,
       url: `${siteUrl}/${code}`,
       siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
       locale: "vi_VN",
@@ -67,15 +41,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           secureUrl: bannerImageUrl,
           width: 1200,
           height: 630,
-          alt: weddingConfig.seo.title,
+          alt: title,
           type: "image/jpeg",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: weddingConfig.seo.title,
-      description: weddingConfig.seo.description,
+      title,
+      description,
       images: [bannerImageUrl],
     },
   };
@@ -88,10 +62,12 @@ export default async function GuestInvitationPage({ params }: PageProps) {
     getGuestByCode(code),
   ]);
 
-  if (guest) {
-    // Asynchronously record view without blocking page render
-    incrementGuestView(code).catch(() => {});
+  if (!guest) {
+    notFound();
   }
+
+  // Asynchronously record view without blocking page render
+  incrementGuestView(code).catch(() => {});
 
   return (
     <WeddingLanding
@@ -104,4 +80,3 @@ export default async function GuestInvitationPage({ params }: PageProps) {
     />
   );
 }
-
