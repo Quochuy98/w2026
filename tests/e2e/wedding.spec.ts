@@ -180,7 +180,7 @@ test.describe("wedding landing", () => {
     expect(response?.status()).toBe(404);
     await expect(page.getByRole("heading", { name: "Không tìm thấy trang" })).toBeVisible();
     await expect(page.getByText("Đường dẫn bạn truy cập không tồn tại hoặc đã được thay đổi.")).toBeVisible();
-    await expect(page.getByRole("link")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Quay về trang chủ" })).toHaveAttribute("href", "/");
 
     const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
     await expect(mascot).toBeVisible();
