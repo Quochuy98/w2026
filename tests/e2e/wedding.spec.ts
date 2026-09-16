@@ -182,7 +182,7 @@ test.describe("wedding landing", () => {
     await expect(page.getByText("Đường dẫn bạn truy cập không tồn tại hoặc đã được thay đổi.")).toBeVisible();
     await expect(page.getByRole("link", { name: "Quay về trang chủ" })).toHaveAttribute("href", "/");
 
-    const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
+    const mascot = page.getByRole("button", { name: /Boop the bride bunny mascot/i });
     await expect(mascot).toBeVisible();
     await mascot.focus();
     await expect(mascot).toBeFocused();
@@ -200,7 +200,7 @@ test.describe("wedding landing", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/khong-ton-tai", { waitUntil: "domcontentloaded" });
 
-    const mascot = page.getByRole("button", { name: /Boop the wedding bunny mascot/i });
+    const mascot = page.getByRole("button", { name: /Boop the bride bunny mascot/i });
     await mascot.click();
     await expect(mascot).toBeVisible();
 
