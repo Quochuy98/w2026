@@ -107,6 +107,7 @@ export interface WeddingEvent {
 
 
 export interface BankAccount {
+  label?: string;
   name: string;
   bankName: string;
   bankCode: string;
@@ -148,6 +149,10 @@ export interface WeddingConfig {
     wedding: WeddingEvent;
     brideWedding?: WeddingEvent;
     reception: WeddingEvent;
+  };
+  gifts: {
+    groom: BankAccount;
+    bride: BankAccount;
   };
   gift: BankAccount;
   thankYouMessage: {
@@ -266,12 +271,31 @@ export const weddingConfig: WeddingConfig = {
     },
 
   },
+  gifts: {
+    groom: {
+      label: "Nhà Trai",
+      name: "TRAN QUOC HUY",
+      bankName: "TPBank",
+      bankCode: "TPB",
+      accountNumber: "04216774601",
+      qrUrl: "https://img.vietqr.io/image/TPB-04216774601-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=TRAN%20QUOC%20HUY",
+    },
+    bride: {
+      label: "Nhà Gái",
+      name: "LE THI HOAI THUONG",
+      bankName: "VietinBank",
+      bankCode: "ICB",
+      accountNumber: "0377755750",
+      qrUrl: "https://img.vietqr.io/image/ICB-0377755750-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=LE%20THI%20HOAI%20THUONG",
+    },
+  },
   gift: {
-    name: "LE THI HOAI THUONG",
-    bankName: "VietinBank",
-    bankCode: "ICB",
-    accountNumber: "0377755750",
-    qrUrl: "https://img.vietqr.io/image/ICB-0377755750-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=LE%20THI%20HOAI%20THUONG",
+    label: "Nhà Trai",
+    name: "TRAN QUOC HUY",
+    bankName: "TPBank",
+    bankCode: "TPB",
+    accountNumber: "04216774601",
+    qrUrl: "https://img.vietqr.io/image/TPB-04216774601-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=TRAN%20QUOC%20HUY",
   },
 
 
@@ -302,6 +326,17 @@ export function getWeddingEvent(side?: "groom" | "bride" | null): WeddingEvent {
     return weddingConfig.events.brideWedding;
   }
   return weddingConfig.events.wedding;
+}
+
+/**
+ * Lấy thông tin tài khoản mừng cưới theo phía nhà (Nhà Trai: TRAN QUOC HUY, Nhà Gái: LE THI HOAI THUONG).
+ * Mặc định trả về Nhà Trai khi side là "groom", null hoặc undefined (trang chủ).
+ */
+export function getWeddingGift(side?: "groom" | "bride" | null): BankAccount {
+  if (side === "bride" && weddingConfig.gifts?.bride) {
+    return weddingConfig.gifts.bride;
+  }
+  return weddingConfig.gifts?.groom || weddingConfig.gift;
 }
 
 export const SLOT_LABELS: Record<WeddingSlot, string> = {

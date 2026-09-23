@@ -49,7 +49,7 @@ export function WeddingLanding({ images, slots, isFallback, guest, groomCrop, br
       <EventDetails guest={guest} />
 
       {/* 5. Hộp Mừng Cưới & QR VietQR */}
-      <WeddingGift />
+      <WeddingGift guest={guest} />
 
       {/* 6. Lời Cảm Ơn Từ Cô Dâu Chú Rể */}
       <ThankYou />

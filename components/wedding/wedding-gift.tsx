@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { weddingConfig } from "@/content/wedding";
+import { weddingConfig, type GuestInfo } from "@/content/wedding";
 import { Reveal } from "./reveal";
 import { Gift, Copy, Check, QrCode, CaretDown, CaretUp, Sparkle, Heart } from "@phosphor-icons/react";
 
-export function WeddingGift() {
+interface WeddingGiftProps {
+  guest?: GuestInfo | null;
+}
+
+export function WeddingGift({ guest }: WeddingGiftProps = {}) {
+  const defaultSide = guest?.side === "bride" ? "bride" : "groom";
+  const [activeSide, setActiveSide] = useState<"groom" | "bride">(defaultSide);
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const gift = weddingConfig.gift;
+  useEffect(() => {
+    setActiveSide(guest?.side === "bride" ? "bride" : "groom");
+  }, [guest?.side]);
+
+  const gift = activeSide === "bride" ? weddingConfig.gifts.bride : weddingConfig.gifts.groom;
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -21,6 +31,12 @@ export function WeddingGift() {
     } catch {
       // Fallback
     }
+  };
+
+  const handleSwitchSide = (side: "groom" | "bride", e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveSide(side);
+    setCopied(false);
   };
 
   return (
@@ -64,9 +80,40 @@ export function WeddingGift() {
             </div>
 
             <div className="relative z-10">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/30 bg-black/20 px-3.5 py-1 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-amber-200">
-                <Sparkle size={13} weight="fill" className="text-amber-300" />
-                <span>Mừng Hạnh Phúc Đôi Uyên Ương</span>
+              {/* Tab chuyển đổi Nhà Trai / Nhà Gái - Chỉ hiển thị 1 mã tại 1 thời điểm */}
+              <div
+                className="mb-4 inline-flex items-center rounded-full border border-amber-300/40 bg-black/30 p-1 backdrop-blur-sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => handleSwitchSide("groom", e)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                    activeSide === "groom"
+                      ? "bg-[linear-gradient(135deg,#D4AF37_0%,#AA771C_100%)] text-white shadow-md"
+                      : "text-amber-200/80 hover:text-white"
+                  }`}
+                >
+                  Nhà Trai
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => handleSwitchSide("bride", e)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                    activeSide === "bride"
+                      ? "bg-[linear-gradient(135deg,#D4AF37_0%,#AA771C_100%)] text-white shadow-md"
+                      : "text-amber-200/80 hover:text-white"
+                  }`}
+                >
+                  Nhà Gái
+                </button>
+              </div>
+
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/30 bg-black/20 px-3.5 py-1 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-amber-200">
+                  <Sparkle size={13} weight="fill" className="text-amber-300" />
+                  <span>Mừng Hạnh Phúc Đôi Uyên Ương</span>
+                </div>
               </div>
 
               <h3 className="font-display text-2xl sm:text-3xl text-amber-50 tracking-[-0.02em] mt-3">
@@ -96,6 +143,7 @@ export function WeddingGift() {
                 {/* QR Code */}
                 <div className="relative mx-auto mb-6 aspect-square w-52 sm:w-60 overflow-hidden rounded-2xl border-2 border-gray-100 bg-white p-3 shadow-inner">
                   <Image
+                    key={gift.accountNumber}
                     src={gift.qrUrl}
                     alt={`Mã QR mừng cưới ${gift.name}`}
                     width={300}

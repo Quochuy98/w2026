@@ -9,7 +9,7 @@ import {
   FALLBACK_GUESTS,
 } from "@/lib/guests";
 import { ALL_NATURE_CODES } from "@/lib/nature-codes";
-import { getWeddingEvent } from "@/content/wedding";
+import { getWeddingEvent, getWeddingGift } from "@/content/wedding";
 
 describe("Guests Data & Invitation Logic", () => {
   it("tra cứu khách mời mặc định theo mã 232388 thành công", async () => {
@@ -126,6 +126,25 @@ describe("Guests Data & Invitation Logic", () => {
     const defaultEvent = getWeddingEvent();
     expect(defaultEvent.venue).toBe("Tư Gia Nhà Trai");
     expect(defaultEvent.shortDate).toBe("22.09.2026");
+  });
+
+  it("trả về tài khoản mừng cưới Nhà Gái (LE THI HOAI THUONG) khi side='bride'", () => {
+    const brideGift = getWeddingGift("bride");
+    expect(brideGift.name).toBe("LE THI HOAI THUONG");
+    expect(brideGift.bankCode).toBe("ICB");
+    expect(brideGift.accountNumber).toBe("0377755750");
+  });
+
+  it("trả về tài khoản mừng cưới Nhà Trai (TRAN QUOC HUY) khi side='groom' hoặc không truyền (trang chủ)", () => {
+    const groomGift = getWeddingGift("groom");
+    expect(groomGift.name).toBe("TRAN QUOC HUY");
+    expect(groomGift.bankCode).toBe("TPB");
+    expect(groomGift.accountNumber).toBe("04216774601");
+
+    const defaultGift = getWeddingGift();
+    expect(defaultGift.name).toBe("TRAN QUOC HUY");
+    expect(defaultGift.bankCode).toBe("TPB");
+    expect(defaultGift.accountNumber).toBe("04216774601");
   });
 
   it("cập nhật thông tin khách mời thành công và giữ nguyên mã code", async () => {
