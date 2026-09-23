@@ -107,7 +107,6 @@ export interface WeddingEvent {
 
 
 export interface BankAccount {
-  label: string;
   name: string;
   bankName: string;
   bankCode: string;
@@ -150,7 +149,7 @@ export interface WeddingConfig {
     brideWedding?: WeddingEvent;
     reception: WeddingEvent;
   };
-  gifts: BankAccount[];
+  gift: BankAccount;
   thankYouMessage: {
     title: string;
     content: string;
@@ -267,24 +266,13 @@ export const weddingConfig: WeddingConfig = {
     },
 
   },
-  gifts: [
-    {
-      label: "Nhà Trai",
-      name: "TRAN QUOC HUY",
-      bankName: "TPBank",
-      bankCode: "TPB",
-      accountNumber: "04216774601",
-      qrUrl: "https://img.vietqr.io/image/TPB-04216774601-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=TRAN%20QUOC%20HUY",
-    },
-    {
-      label: "Nhà Gái",
-      name: "LE THI HOAI THUONG",
-      bankName: "VietinBank",
-      bankCode: "ICB",
-      accountNumber: "0377755750",
-      qrUrl: "https://img.vietqr.io/image/ICB-0377755750-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=LE%20THI%20HOAI%20THUONG",
-    },
-  ],
+  gift: {
+    name: "LE THI HOAI THUONG",
+    bankName: "VietinBank",
+    bankCode: "ICB",
+    accountNumber: "0377755750",
+    qrUrl: "https://img.vietqr.io/image/ICB-0377755750-compact2.png?amount=0&addInfo=Mung%20cuoi%20Quoc%20Huy%20Hoai%20Thuong&accountName=LE%20THI%20HOAI%20THUONG",
+  },
 
 
   thankYouMessage: {
