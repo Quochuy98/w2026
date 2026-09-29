@@ -21,6 +21,11 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT || 22 }}
           script_stop: true
           script: |
+            if [ ! -d /var/www/w2026 ]; then
+              sudo mkdir -p /var/www
+              sudo chown -R ubuntu:ubuntu /var/www 2>/dev/null || true
+              git clone https://github.com/Quochuy98/w2026.git /var/www/w2026
+            fi
             cd /var/www/w2026
             sudo mkdir -p /var/www/w2026-data/album
             sudo chown -R ubuntu:ubuntu /var/www/w2026-data 2>/dev/null || true
