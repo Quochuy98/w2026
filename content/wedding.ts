@@ -131,8 +131,6 @@ export interface GuestInfo {
   note?: string;
   viewCount?: number;
   lastViewedAt?: string;
-  missedViewCount?: number;
-  lastMissedViewedAt?: string;
 }
 
 export interface WeddingConfig {

@@ -14,7 +14,6 @@ import {
   Buildings,
   House,
   Eye,
-  Gift,
   MagnifyingGlass,
   ArrowClockwise,
   PencilSimple,
@@ -447,8 +446,7 @@ export function GuestManager() {
                   <th className="p-4">Mã Link</th>
                   <th className="p-4">Sự Kiện</th>
                   <th className="p-4">Bên</th>
-                  <th className="p-4 text-center">Xem Thiệp Gốc</th>
-                  <th className="p-4 text-center">Xem Mừng Cưới</th>
+                  <th className="p-4 text-center">Lượt Xem</th>
                   <th className="p-4 text-right">Thao Tác</th>
                 </tr>
               </thead>
@@ -493,16 +491,9 @@ export function GuestManager() {
                       </td>
 
                       <td className="p-4 text-center">
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--foreground)]" title="Lượt xem thiệp gốc">
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--foreground)]">
                           <Eye size={14} className="text-[var(--muted)]" />
                           {g.viewCount || 0}
-                        </span>
-                      </td>
-
-                      <td className="p-4 text-center">
-                        <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-full" title="Lượt xem trang Mừng Cưới / Hehehe">
-                          <Gift size={13} weight="fill" className="text-amber-700" />
-                          <span>{g.missedViewCount || 0}</span>
                         </span>
                       </td>
 

@@ -1,6 +1,9 @@
 import { Metadata } from "next";
-import { getGuestByCode, incrementMissedGuestView } from "@/lib/guests";
-import { MissedLanding } from "@/components/wedding/missed-landing";
+import { notFound } from "next/navigation";
+import { getPublicAlbumState } from "@/lib/gallery";
+import { getGuestByCode, incrementGuestView } from "@/lib/guests";
+
+import { WeddingLanding } from "@/components/wedding/wedding-landing";
 import { weddingConfig } from "@/content/wedding";
 
 export const dynamic = "force-dynamic";
@@ -12,14 +15,15 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params;
   const guest = await getGuestByCode(code);
+  const siteUrl = weddingConfig.seo.siteUrl || "https://wedding.quochuy.me";
+  const bannerImageUrl = `${siteUrl}/og/og-banner.jpg`;
 
-  const title = guest
-    ? `Trân trọng kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`
-    : `Hehehe bạn đã bỏ lỡ điều gì à? | Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`;
+  if (!guest) {
+    notFound();
+  }
 
-  const description = guest
-    ? `Kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương.`
-    : `Dù bạn truy cập đường dẫn nào, tình cảm của bạn dành cho Quốc Huy & Hoài Thương luôn là món quà trân quý nhất.`;
+  const title = `Kính mời ${guest.salutation} ${guest.name} | Thiệp Cưới Quốc Huy & Hoài Thương`;
+  const description = `Trân trọng kính mời ${guest.salutation} ${guest.name} đến chung vui cùng Quốc Huy và Hoài Thương trong ngày hạnh phúc.`;
 
   return {
     title,
@@ -27,22 +31,52 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
+      url: `${siteUrl}/${code}`,
       siteName: `Thiệp Cưới ${weddingConfig.groom} & ${weddingConfig.bride}`,
       locale: "vi_VN",
       type: "website",
+      images: [
+        {
+          url: bannerImageUrl,
+          secureUrl: bannerImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+          type: "image/jpeg",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [bannerImageUrl],
     },
   };
 }
 
-export default async function DynamicGuestPage({ params }: PageProps) {
+export default async function GuestInvitationPage({ params }: PageProps) {
   const { code } = await params;
+  const [album, guest] = await Promise.all([
+    getPublicAlbumState(),
+    getGuestByCode(code),
+  ]);
 
-  if (code) {
-    // Record missed page view ping separately in Supabase
-    incrementMissedGuestView(code).catch(() => {});
+  if (!guest) {
+    notFound();
   }
 
-  const guest = await getGuestByCode(code);
+  // Asynchronously record view without blocking page render
+  incrementGuestView(code).catch(() => {});
 
-  return <MissedLanding guest={guest} code={code} />;
+  return (
+    <WeddingLanding
+      images={album.images}
+      slots={album.slots}
+      isFallback={album.isFallback}
+      guest={guest}
+      groomCrop={album.groomCrop}
+      brideCrop={album.brideCrop}
+    />
+  );
 }
