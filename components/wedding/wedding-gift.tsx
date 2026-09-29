@@ -8,12 +8,13 @@ import { Gift, Copy, Check, QrCode, CaretDown, CaretUp, Sparkle, Heart } from "@
 
 interface WeddingGiftProps {
   guest?: GuestInfo | null;
+  initialOpen?: boolean;
 }
 
-export function WeddingGift({ guest }: WeddingGiftProps = {}) {
+export function WeddingGift({ guest, initialOpen = true }: WeddingGiftProps = {}) {
   const defaultSide = guest?.side === "bride" ? "bride" : "groom";
   const [activeSide, setActiveSide] = useState<"groom" | "bride">(defaultSide);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {

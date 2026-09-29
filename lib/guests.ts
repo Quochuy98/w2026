@@ -77,8 +77,10 @@ export async function getGuestByCode(code: string): Promise<GuestInfo | null> {
       eventType: (data.event_type as EventType) || "wedding",
       side: (data.side as "groom" | "bride") || "groom",
       note: data.note,
-      viewCount: data.view_count,
+      viewCount: data.view_count || 0,
       lastViewedAt: data.last_viewed_at,
+      missedViewCount: data.missed_view_count || 0,
+      lastMissedViewedAt: data.last_missed_viewed_at,
     };
 
   } catch (err) {
@@ -88,7 +90,7 @@ export async function getGuestByCode(code: string): Promise<GuestInfo | null> {
 }
 
 /**
- * Cập nhật số lần xem thiệp khi khách mở link.
+ * Cập nhật số lần xem thiệp gốc khi khách mở thiệp.
  */
 export async function incrementGuestView(code: string): Promise<void> {
   const cleanCode = code.trim().toLowerCase();
@@ -105,7 +107,6 @@ export async function incrementGuestView(code: string): Promise<void> {
     const supabase = getSupabaseServerClient();
     if (!supabase) return;
 
-    // Supabase RPC or direct increment
     const { data: current } = await supabase
       .from("guests")
       .select("view_count")
@@ -122,6 +123,43 @@ export async function incrementGuestView(code: string): Promise<void> {
       .eq("code", cleanCode);
   } catch (err) {
     console.error("Error updating guest view count:", err);
+  }
+}
+
+/**
+ * Cập nhật số lần xem trang Bỏ Lỡ / Mừng Cưới riêng biệt.
+ */
+export async function incrementMissedGuestView(code: string): Promise<void> {
+  const cleanCode = code.trim().toLowerCase();
+
+  if (!isSupabaseConfigured()) {
+    if (FALLBACK_GUESTS[cleanCode]) {
+      FALLBACK_GUESTS[cleanCode].missedViewCount = (FALLBACK_GUESTS[cleanCode].missedViewCount || 0) + 1;
+      FALLBACK_GUESTS[cleanCode].lastMissedViewedAt = new Date().toISOString();
+    }
+    return;
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    if (!supabase) return;
+
+    const { data: current } = await supabase
+      .from("guests")
+      .select("missed_view_count")
+      .eq("code", cleanCode)
+      .maybeSingle();
+
+    const currentCount = (current as { missed_view_count?: number } | null)?.missed_view_count || 0;
+    await supabase
+      .from("guests")
+      .update({
+        missed_view_count: currentCount + 1,
+        last_missed_viewed_at: new Date().toISOString(),
+      })
+      .eq("code", cleanCode);
+  } catch (err) {
+    console.error("Error updating missed guest view count:", err);
   }
 }
 
@@ -154,8 +192,10 @@ export async function listAllGuests(): Promise<GuestInfo[]> {
       eventType: (d.event_type as EventType) || "wedding",
       side: (d.side as "groom" | "bride") || "groom",
       note: d.note,
-      viewCount: d.view_count,
+      viewCount: d.view_count || 0,
       lastViewedAt: d.last_viewed_at,
+      missedViewCount: d.missed_view_count || 0,
+      lastMissedViewedAt: d.last_missed_viewed_at,
     }));
   } catch (err) {
     console.error("Error listing guests:", err);
